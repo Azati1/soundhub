@@ -40,7 +40,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                     .replace(R.id.container,
                         SectionFragment.newInstance()
                     )
-                    .addToBackStack(null)
+                    .addToBackStack("Section")
                     .commit()
             }
         }

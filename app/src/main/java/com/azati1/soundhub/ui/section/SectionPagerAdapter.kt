@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-const val SECTION_SIZE = 4;
+const val SECTION_SIZE = 4
 
 class SectionPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -22,7 +22,7 @@ class SectionPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapt
 
     fun addItems(items: ArrayList<SectionPagerAdapter.SoundboardItem>) {
         //sectionContents.addAll(items)
-        val separated = items.chunked(SECTION_SIZE);
+        val separated = items.chunked(SECTION_SIZE)
 
         val pages: ArrayList<SectionPage> = arrayListOf()
 

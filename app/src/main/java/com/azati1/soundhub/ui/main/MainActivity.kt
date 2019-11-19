@@ -3,13 +3,18 @@ package com.azati1.soundhub.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.ApiService
+import com.azati1.soundhub.repo.Repository
 import com.azati1.soundhub.ui.splash.SplashScreenActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFragment() {
-
         supportFragmentManager.beginTransaction().replace(
             R.id.container,
             MainFragment.newInstance()

@@ -56,11 +56,6 @@ class SectionFragment : Fragment() {
                     image = "image2",
                     text = "text5",
                     sound = "sound2"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text5",
-                    sound = "sound2"
                 )
             )
 
