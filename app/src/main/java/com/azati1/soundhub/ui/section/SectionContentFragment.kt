@@ -51,7 +51,15 @@ class SectionContentFragment : Fragment() {
             content.addView(horizontalLinearLayout)
 
         } else {
+            val horizontalLinearLayout = LinearLayout(context)
+            val linearLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            linearLayoutParams.weight = 1.0f
+            horizontalLinearLayout.orientation = LinearLayout.HORIZONTAL
+            horizontalLinearLayout.layoutParams = linearLayoutParams
 
+            horizontalLinearLayout.addView(buildSoundboardItem(items[0]))
+
+            content.addView(horizontalLinearLayout)
         }
     }
 

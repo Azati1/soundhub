@@ -20,47 +20,51 @@ class SectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sectionPagerAdapter = SectionPagerAdapter(fragmentManager!!)
+        val sectionPagerAdapter = SectionPagerAdapter(childFragmentManager)
+
+
+
 
         sectionPagerAdapter.addItems(
             arrayListOf(
-                SectionPagerAdapter.SectionPage(
-                    arrayListOf(
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image1",
-                            text = "text1",
-                            sound = "sound1"
-                        ),
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image2",
-                            text = "text2",
-                            sound = "sound2"
-                        ),
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image1",
-                            text = "text1",
-                            sound = "sound1"
-                        ),
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image2",
-                            text = "text2",
-                            sound = "sound2"
-                        ))
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image1",
+                    text = "text1",
+                    sound = "sound1"
                 ),
-                SectionPagerAdapter.SectionPage(
-                    arrayListOf(
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image3",
-                            text = "text3",
-                            sound = "sound3"
-                        ),
-                        SectionPagerAdapter.SoundboardItem(
-                            image = "image4",
-                            text = "text4",
-                            sound = "sound4"
-                        ))
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image2",
+                    text = "text2",
+                    sound = "sound2"
+                ),
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image1",
+                    text = "text3",
+                    sound = "sound1"
+                ),
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image2",
+                    text = "text4",
+                    sound = "sound2"
+                ),
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image2",
+                    text = "text5",
+                    sound = "sound2"
+                ),
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image2",
+                    text = "text5",
+                    sound = "sound2"
+                ),
+                SectionPagerAdapter.SoundboardItem(
+                    image = "image2",
+                    text = "text5",
+                    sound = "sound2"
                 )
             )
+
+
         )
         sectionsViewPager.adapter = sectionPagerAdapter
     }

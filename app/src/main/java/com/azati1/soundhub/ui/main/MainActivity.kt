@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFragment() {
+
         supportFragmentManager.beginTransaction().replace(
             R.id.container,
             MainFragment.newInstance()
