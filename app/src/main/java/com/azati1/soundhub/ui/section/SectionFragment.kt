@@ -33,34 +33,24 @@ class SectionFragment : Fragment() {
                     sound = "sound1"
                 ),
                 SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text2",
-                    sound = "sound2"
-                ),
-                SectionPagerAdapter.SoundboardItem(
                     image = "image1",
-                    text = "text3",
+                    text = "text1",
                     sound = "sound1"
                 ),
                 SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text4",
-                    sound = "sound2"
+                    image = "image1",
+                    text = "text1",
+                    sound = "sound1"
                 ),
                 SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text5",
-                    sound = "sound2"
+                    image = "image1",
+                    text = "text1",
+                    sound = "sound1"
                 ),
                 SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text5",
-                    sound = "sound2"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image2",
-                    text = "text5",
-                    sound = "sound2"
+                    image = "image1",
+                    text = "text1",
+                    sound = "sound1"
                 )
             )
 

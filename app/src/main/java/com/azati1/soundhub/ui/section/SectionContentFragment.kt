@@ -33,15 +33,22 @@ class SectionContentFragment : Fragment() {
     private fun buildPageContent() {
 
         for(i in sectionPage.soundbordItems.chunked(2)){
-            buildContentLine(i);
+            buildContentLine(i)
         }
 
-        /*
-        for (i in sectionPage.soundbordItems.indices step 2) {
-            buildContentLine(sectionPage.soundbordItems.subList(i, i + 2))
-        }
+        if(sectionPage.soundbordItems.size <= 2)
+            buildEmptyLine()
+    }
 
-         */
+    private fun buildEmptyLine(){
+        val horizontalLinearLayout = LinearLayout(context)
+        val linearLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        linearLayoutParams.weight = 1.0f
+        horizontalLinearLayout.orientation = LinearLayout.HORIZONTAL
+        horizontalLinearLayout.layoutParams = linearLayoutParams
+        horizontalLinearLayout.addView(buildSoundboardItem(SectionPagerAdapter.SoundboardItem("stub", "stub", "stub")))
+        horizontalLinearLayout.visibility = View.INVISIBLE
+        content.addView(horizontalLinearLayout)
     }
 
     private fun buildContentLine(items: List<SectionPagerAdapter.SoundboardItem>) {
