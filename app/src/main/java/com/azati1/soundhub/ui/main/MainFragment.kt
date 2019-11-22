@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,17 @@ import kotlinx.android.synthetic.main.fragment_main.*
 class MainFragment : Fragment() {
 
     private var content: Content? = null
+    private var mainFragmentCallbacks: OnMainFragmentDataLoaded? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is OnMainFragmentDataLoaded){
+            mainFragmentCallbacks =  context
+        } else {
+            throw RuntimeException(context!!.toString() + " must implement MainFragmentCallbacks")
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +51,11 @@ class MainFragment : Fragment() {
         sectionsAdapter.addItems(
             content
         )
+        sectionsAdapter.setOnDataLoadedListener(mainFragmentCallbacks!!)
+
     }
+
+
 
     companion object {
         @JvmStatic
@@ -68,4 +84,9 @@ class MainFragment : Fragment() {
             return fragment
         }
     }
+}
+
+interface OnMainFragmentDataLoaded {
+    fun onImagesLoaded()
+
 }

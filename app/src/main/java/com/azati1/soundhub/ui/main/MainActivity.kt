@@ -8,7 +8,6 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
-import androidx.fragment.app.Fragment
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
@@ -16,7 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
@@ -92,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         compositeDisposable.clear()
     }
 
-    private fun onDataLoaded(content: ContentDto) {
+    override fun onImagesLoaded() {
         val fragement = supportFragmentManager.findFragmentByTag("splash")
         fragement?.let {
             supportFragmentManager
@@ -100,10 +99,17 @@ class MainActivity : AppCompatActivity() {
                 .remove(fragement)
                 .commit()
         }
+    }
+
+
+    private fun onDataLoaded(content: ContentDto) {
+
+
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, MainFragment.create(content))
             .commit()
+
     }
 
 }
