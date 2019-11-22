@@ -7,9 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.ButtonItem
+import com.azati1.soundhub.components.ContentItem
+import com.azati1.soundhub.components.ContentItemDto
 import kotlinx.android.synthetic.main.fragment_section.*
 
 class SectionFragment : Fragment() {
+
+    private var contentItem: ContentItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,10 +27,13 @@ class SectionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val sectionPagerAdapter = SectionPagerAdapter(childFragmentManager)
 
+        contentItem = arguments?.getSerializable("item") as ContentItem?
 
+        contentItem?.let {
+            sectionPagerAdapter.addItems(it.buttons)
+        }
 
-
-        sectionPagerAdapter.addItems(
+        /*sectionPagerAdapter.addItems(
             arrayListOf(
                 SectionPagerAdapter.SoundboardItem(
                     image = "image1",
@@ -55,14 +63,22 @@ class SectionFragment : Fragment() {
             )
 
 
-        )
+        )*/
         sectionsViewPager.adapter = sectionPagerAdapter
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() : SectionFragment {
-            return SectionFragment()
+        fun newInstance(item: ContentItemDto) : SectionFragment {
+            val bundle = Bundle()
+            bundle.putSerializable("item", ContentItem(
+                name = item.name,
+                buttons = item.buttons.map { ButtonItem(name = it.name, pageUrl = it.pageUrl, cost = it.cost) },
+                pictureUrl = item.pictureUrl
+            ))
+            val fragment = SectionFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 

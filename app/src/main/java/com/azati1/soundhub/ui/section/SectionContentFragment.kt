@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.ButtonItem
 import kotlinx.android.synthetic.main.fragment_section_content.*
 import kotlinx.android.synthetic.main.soundboard_item.*
 
@@ -51,7 +52,7 @@ class SectionContentFragment : Fragment() {
         content.addView(horizontalLinearLayout)
     }
 
-    private fun buildContentLine(items: List<SectionPagerAdapter.SoundboardItem>) {
+    private fun buildContentLine(items: List<ButtonItem>) {
         if (items.size == 2) {
 
             val horizontalLinearLayout = LinearLayout(context)
@@ -85,15 +86,16 @@ class SectionContentFragment : Fragment() {
         }
     }
 
-    private fun buildSoundboardItem(item: SectionPagerAdapter.SoundboardItem) : View {
+    private fun buildSoundboardItem(item: ButtonItem) : View {
         val layout = LayoutInflater.from(context).inflate(R.layout.soundboard_item, null, false)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
         layoutParams.weight = 1.0f
         layout.layoutParams = layoutParams
+        layout.findViewById<TextView>(R.id.item_text).text = item.name
 
         layout.findViewById<TextView>(R.id.item_text).text = item.text
         layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
-            Toast.makeText(context, item.sound, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, item.pageUrl, Toast.LENGTH_SHORT).show()
         }
         return layout
     }

@@ -4,18 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.ContentItemDto
 import com.azati1.soundhub.ui.section.SectionFragment
+import com.squareup.picasso.Picasso
 
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
 
-    private val sections = mutableListOf<Section>()
+    private val sections = mutableListOf<ContentItemDto>()
 
-    fun addItems(items: List<Section>) {
+    fun addItems(items: List<ContentItemDto>) {
         sections.addAll(items)
         notifyDataSetChanged()
     }
@@ -31,14 +34,17 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     }
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
-        holder.title.text = sections[position].text
-        holder.image.setBackgroundColor(sections[position].backgroundColor)
+        holder.title.text = sections[position].name
+        Picasso.get()
+            .load(sections[position].pictureUrl)
+            .fit()
+            .into(holder.image)
         holder.sectionItemView.setOnClickListener {
             if (it.context is FragmentActivity) {
                 (it.context as FragmentActivity).supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.container,
-                        SectionFragment.newInstance()
+                        SectionFragment.newInstance(sections[position])
                     )
                     .addToBackStack("Section")
                     .commit()
@@ -49,7 +55,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val sectionItemView = itemView.findViewById<LinearLayout>(R.id.sectionItemView)
-        val image = itemView.findViewById<FrameLayout>(R.id.sectionImage)
+        val image = itemView.findViewById<ImageView>(R.id.sectionImage)
         val title = itemView.findViewById<TextView>(R.id.sectionTitle)
 
     }

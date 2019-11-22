@@ -7,7 +7,7 @@ import io.reactivex.Single
 import java.io.File
 
 class Repository(
-    val apiService: ApiService
+    private val apiService: ApiService
 ) {
 
     fun getFileByPath(path: String): File? {

@@ -2,7 +2,7 @@ package com.azati1.soundhub.components
 
 import com.google.gson.annotations.SerializedName
 
-data class ContentItemDto(
+data class ContentItemDto (
     @SerializedName("name")
     val name: String,
     @SerializedName("picture")

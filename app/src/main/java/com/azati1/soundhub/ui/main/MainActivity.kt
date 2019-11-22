@@ -1,27 +1,20 @@
 package com.azati1.soundhub.ui.main
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
 import com.azati1.soundhub.R
-import com.azati1.soundhub.components.ApiService
-import com.azati1.soundhub.repo.Repository
-import com.azati1.soundhub.ui.splash.SplashScreenActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.azati1.soundhub.ui.splash.SplashScreenFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainFragment.MainFragmentListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        startActivity(Intent(this, SplashScreenActivity::class.java))
         initToolbar()
         initFragment()
     }
@@ -29,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private fun initFragment() {
         supportFragmentManager.beginTransaction().replace(
             R.id.container,
-            MainFragment.newInstance()
+            MainFragment.create()
         ).commit()
     }
 
@@ -56,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             layoutParams.gravity = Gravity.TOP or Gravity.START
         }
         menu.show()
+    }
+
+    override fun onDataLoaded() {
+        //supportFragmentManager.popBackStack()
     }
 
 }

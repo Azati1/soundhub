@@ -3,6 +3,8 @@ package com.azati1.soundhub.ui.section
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.azati1.soundhub.components.ButtonItem
+import com.azati1.soundhub.components.ContentItem
 
 const val SECTION_SIZE = 4
 
@@ -20,7 +22,7 @@ class SectionPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapt
         return sectionContents.size
     }
 
-    fun addItems(items: ArrayList<SectionPagerAdapter.SoundboardItem>) {
+    fun addItems(items: List<ButtonItem>) {
         //sectionContents.addAll(items)
         val separated = items.chunked(SECTION_SIZE)
 
@@ -35,13 +37,7 @@ class SectionPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapt
     }
 
     class SectionPage(
-        val soundbordItems: List<SoundboardItem>
-    )
-
-    class SoundboardItem(
-        val image: String,
-        val text: String,
-        val sound: String
+        val soundbordItems: List<ButtonItem>
     )
 
 }
