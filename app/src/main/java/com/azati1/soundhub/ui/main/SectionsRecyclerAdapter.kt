@@ -1,27 +1,24 @@
 package com.azati1.soundhub.ui.main
 
-import android.graphics.Bitmap
-import android.transition.Fade
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.ContentItem
 import com.azati1.soundhub.components.ContentItemDto
 import com.azati1.soundhub.ui.section.SectionFragment
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
 
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
 
-    private val sections = mutableListOf<ContentItemDto>()
+    private val sections = mutableListOf<ContentItem>()
 
-    fun addItems(items: List<ContentItemDto>) {
+    fun addItems(items: List<ContentItem>) {
         sections.addAll(items)
         notifyDataSetChanged()
     }

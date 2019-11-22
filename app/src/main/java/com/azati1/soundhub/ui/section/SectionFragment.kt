@@ -31,46 +31,28 @@ class SectionFragment : Fragment() {
 
         contentItem?.let {
             sectionName.text = it.name
-            sectionPagerAdapter.addItems(it.buttons)
+            val buttons = mutableListOf<ButtonItem>()
+            buttons.addAll(it.buttons)
+            buttons.addAll(it.buttons)
+            sectionPagerAdapter.addItems(buttons)
         }
 
-        /*sectionPagerAdapter.addItems(
-            arrayListOf(
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image1",
-                    text = "text1",
-                    sound = "sound1"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image1",
-                    text = "text1",
-                    sound = "sound1"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image1",
-                    text = "text1",
-                    sound = "sound1"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image1",
-                    text = "text1",
-                    sound = "sound1"
-                ),
-                SectionPagerAdapter.SoundboardItem(
-                    image = "image1",
-                    text = "text1",
-                    sound = "sound1"
-                )
-            )
-
-
-        )*/
         sectionsViewPager.adapter = sectionPagerAdapter
+
+        prevPageButton.setOnClickListener {
+            if (sectionsViewPager.currentItem > 0)
+                sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem - 1, true)
+        }
+
+        nextPageButton.setOnClickListener {
+            if (sectionPagerAdapter.count > sectionsViewPager.currentItem + 1)
+                sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem + 1, true)
+        }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(item: ContentItemDto) : SectionFragment {
+        fun newInstance(item: ContentItem) : SectionFragment {
             val bundle = Bundle()
             bundle.putSerializable("item", ContentItem(
                 name = item.name,

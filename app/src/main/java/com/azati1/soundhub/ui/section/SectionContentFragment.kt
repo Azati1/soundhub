@@ -47,7 +47,11 @@ class SectionContentFragment : Fragment() {
         linearLayoutParams.weight = 1.0f
         horizontalLinearLayout.orientation = LinearLayout.HORIZONTAL
         horizontalLinearLayout.layoutParams = linearLayoutParams
-        horizontalLinearLayout.addView(buildSoundboardItem(SectionPagerAdapter.SoundboardItem("stub", "stub", "stub")))
+        horizontalLinearLayout.addView(buildSoundboardItem(ButtonItem(
+            name = "stub",
+            cost = 0,
+            pageUrl = "stub"
+        )))
         horizontalLinearLayout.visibility = View.INVISIBLE
         content.addView(horizontalLinearLayout)
     }
