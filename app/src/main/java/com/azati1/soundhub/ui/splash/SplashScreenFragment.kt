@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 
 import com.azati1.soundhub.R
-import kotlinx.android.synthetic.main.activity_splash_screen.*
+import kotlinx.android.synthetic.main.fragment_splash_screen.*
 
 class SplashScreenFragment : Fragment() {
 

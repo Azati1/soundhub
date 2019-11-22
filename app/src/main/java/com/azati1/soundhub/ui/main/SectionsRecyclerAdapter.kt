@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.main
 
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -70,13 +71,18 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
             })
         holder.sectionItemView.setOnClickListener {
             if (it.context is FragmentActivity) {
+
+                val fragment = SectionFragment.newInstance(sections[position])
+                fragment.sharedElementEnterTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(R.transition.name_transition)
+
                 (it.context as FragmentActivity).supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container,
-                        SectionFragment.newInstance(sections[position])
-                    )
                     .addSharedElement(holder.title, holder.title.transitionName)
-                    .addToBackStack("Section")
+                    .replace(
+                        R.id.container,
+                        fragment
+                    )
+                    .addToBackStack(null)
                     .commit()
             }
         }
