@@ -31,9 +31,17 @@ class SectionContentFragment : Fragment() {
     }
 
     private fun buildPageContent() {
+
+        for(i in sectionPage.soundbordItems.chunked(2)){
+            buildContentLine(i);
+        }
+
+        /*
         for (i in sectionPage.soundbordItems.indices step 2) {
             buildContentLine(sectionPage.soundbordItems.subList(i, i + 2))
         }
+
+         */
     }
 
     private fun buildContentLine(items: List<SectionPagerAdapter.SoundboardItem>) {
@@ -59,6 +67,13 @@ class SectionContentFragment : Fragment() {
 
             horizontalLinearLayout.addView(buildSoundboardItem(items[0]))
 
+            val layout = LayoutInflater.from(context).inflate(R.layout.soundboard_item, null, false)
+            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            layoutParams.weight = 1.0f
+            layout.layoutParams = layoutParams
+            layout.visibility = View.INVISIBLE
+            horizontalLinearLayout.addView(layout)
+
             content.addView(horizontalLinearLayout)
         }
     }
@@ -68,6 +83,7 @@ class SectionContentFragment : Fragment() {
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
         layoutParams.weight = 1.0f
         layout.layoutParams = layoutParams
+
         layout.findViewById<TextView>(R.id.item_text).text = item.text
         layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
             Toast.makeText(context, item.sound, Toast.LENGTH_SHORT).show()
