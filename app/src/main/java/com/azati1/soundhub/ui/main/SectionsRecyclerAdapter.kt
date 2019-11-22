@@ -1,9 +1,11 @@
 package com.azati1.soundhub.ui.main
 
+import android.graphics.Bitmap
+import android.transition.Fade
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,6 +15,7 @@ import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ContentItemDto
 import com.azati1.soundhub.ui.section.SectionFragment
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
 
@@ -34,10 +37,12 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     }
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
+
         holder.title.text = sections[position].name
         Picasso.get()
             .load(sections[position].pictureUrl)
-            .fit()
+            .resize(5000, 5000)
+            .onlyScaleDown()
             .into(holder.image)
         holder.sectionItemView.setOnClickListener {
             if (it.context is FragmentActivity) {
@@ -46,6 +51,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                     .replace(R.id.container,
                         SectionFragment.newInstance(sections[position])
                     )
+                    .addSharedElement(holder.title, holder.title.transitionName)
                     .addToBackStack("Section")
                     .commit()
             }

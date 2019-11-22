@@ -30,6 +30,7 @@ class SectionFragment : Fragment() {
         contentItem = arguments?.getSerializable("item") as ContentItem?
 
         contentItem?.let {
+            sectionName.text = it.name
             sectionPagerAdapter.addItems(it.buttons)
         }
 

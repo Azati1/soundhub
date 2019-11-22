@@ -5,15 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_section_content.*
-import kotlinx.android.synthetic.main.soundboard_item.*
 
 class SectionContentFragment : Fragment() {
 
@@ -92,8 +92,6 @@ class SectionContentFragment : Fragment() {
         layoutParams.weight = 1.0f
         layout.layoutParams = layoutParams
         layout.findViewById<TextView>(R.id.item_text).text = item.name
-
-        layout.findViewById<TextView>(R.id.item_text).text = item.text
         layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
             Toast.makeText(context, item.pageUrl, Toast.LENGTH_SHORT).show()
         }
