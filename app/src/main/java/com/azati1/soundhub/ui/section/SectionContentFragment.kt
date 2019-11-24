@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_section_content.*
 
@@ -99,6 +100,14 @@ class SectionContentFragment : Fragment() {
         layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
             Toast.makeText(context, item.picture, Toast.LENGTH_SHORT).show()
         }
+
+        Picasso.get()
+            .load(item.picture)
+            .resize(5000, 5000)
+            .onlyScaleDown()
+            .placeholder(R.drawable.ic_dehaze_24px)
+            .into(layout.findViewById<ImageView>(R.id.view))
+
         return layout
     }
 
