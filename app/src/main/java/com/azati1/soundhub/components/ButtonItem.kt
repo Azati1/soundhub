@@ -4,6 +4,6 @@ import java.io.Serializable
 
 class ButtonItem(
     val name: String,
-    val cost: Int,
-    val pageUrl: String
+    val sound: String,
+    val picture: String
 ) : Serializable

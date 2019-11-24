@@ -24,7 +24,7 @@ class MainFragment : Fragment() {
         if(context is OnMainFragmentDataLoaded){
             mainFragmentCallbacks =  context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement MainFragmentCallbacks")
+            throw RuntimeException(context.toString() + " must implement MainFragmentCallbacks")
         }
 
     }
@@ -72,8 +72,8 @@ class MainFragment : Fragment() {
                             buttons = it.buttons.map { item ->
                                 ButtonItem(
                                     name = item.name,
-                                    pageUrl = item.pageUrl,
-                                    cost = item.cost
+                                    sound = item.sound,
+                                    picture = item.picture
                                 )
                             })
                     }

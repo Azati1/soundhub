@@ -56,7 +56,7 @@ class SectionFragment : Fragment() {
             val bundle = Bundle()
             bundle.putSerializable("item", ContentItem(
                 name = item.name,
-                buttons = item.buttons.map { ButtonItem(name = it.name, pageUrl = it.pageUrl, cost = it.cost) },
+                buttons = item.buttons.map { ButtonItem(name = it.name, picture = it.picture, sound = it.sound) },
                 pictureUrl = item.pictureUrl
             ))
             val fragment = SectionFragment()

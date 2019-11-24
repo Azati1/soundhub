@@ -49,8 +49,8 @@ class SectionContentFragment : Fragment() {
         horizontalLinearLayout.layoutParams = linearLayoutParams
         horizontalLinearLayout.addView(buildSoundboardItem(ButtonItem(
             name = "stub",
-            cost = 0,
-            pageUrl = "stub"
+            sound = "stub",
+            picture = "stub"
         )))
         horizontalLinearLayout.visibility = View.INVISIBLE
         content.addView(horizontalLinearLayout)
@@ -97,7 +97,7 @@ class SectionContentFragment : Fragment() {
         layout.layoutParams = layoutParams
         layout.findViewById<TextView>(R.id.item_text).text = item.name
         layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
-            Toast.makeText(context, item.pageUrl, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, item.picture, Toast.LENGTH_SHORT).show()
         }
         return layout
     }
