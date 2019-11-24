@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.main
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,19 +10,32 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
 import com.azati1.soundhub.R
+
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
+import com.downloader.OnDownloadListener
+import com.downloader.PRDownloader
+import com.downloader.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+
+
+
+
+
 
 class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
+    private lateinit var dirPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dirPath = applicationInfo.dataDir
+
         setContentView(R.layout.activity_main)
         initToolbar()
         initFragment()
@@ -103,6 +117,40 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
 
 
     private fun onDataLoaded(content: ContentDto) {
+
+
+        Log.d("SAS", "SAS");
+
+
+
+        content.content.forEach{itemsList ->
+            itemsList.buttons.forEach{button ->
+
+                val fileName = Uri.parse(button.sound).lastPathSegment
+                val url = button.sound;
+
+                val downloadId = PRDownloader.download(url, dirPath, fileName)
+                    .build()
+                    .setOnStartOrResumeListener { }
+                    .setOnPauseListener { }
+                    .setOnCancelListener {
+
+                    }
+                    .setOnProgressListener{progress ->
+
+                    }
+                    .start(object : OnDownloadListener {
+                        override fun onError(error: com.downloader.Error?) {
+
+                        }
+
+                        override fun onDownloadComplete() {
+                            Log.d("FILE_DOWNLOAD", "FILE DOWNLOAD IS COMPLETE")
+                        }
+
+                    })
+            }
+        }
 
 
         supportFragmentManager

@@ -1,6 +1,7 @@
 package com.azati1.soundhub.components
 
 import android.app.Application
+import com.downloader.PRDownloader
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,4 +25,8 @@ class AppComponent : Application() {
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        PRDownloader.initialize(applicationContext)
+    }
 }
