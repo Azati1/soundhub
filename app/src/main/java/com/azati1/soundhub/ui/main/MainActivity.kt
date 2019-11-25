@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
+import androidx.core.content.FileProvider
 import com.azati1.soundhub.R
 
 import com.azati1.soundhub.components.ContentDto
@@ -16,13 +17,12 @@ import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.downloader.utils.Utils
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-
-
-
-
+import io.reactivex.subjects.BehaviorSubject
+import java.io.File
 
 
 class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
@@ -115,48 +115,71 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
         }
     }
 
+    private fun showMainFragment(content: ContentDto){
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, MainFragment.create(content))
+            .commit()
+    }
 
     private fun onDataLoaded(content: ContentDto) {
 
-
-        Log.d("SAS", "SAS");
-
+        var requestsCount = 0
 
 
         content.content.forEach{itemsList ->
             itemsList.buttons.forEach{button ->
 
                 val fileName = Uri.parse(button.sound).lastPathSegment
-                val url = button.sound;
+                val url = button.sound
 
-                val downloadId = PRDownloader.download(url, dirPath, fileName)
-                    .build()
-                    .setOnStartOrResumeListener { }
-                    .setOnPauseListener { }
-                    .setOnCancelListener {
-
-                    }
-                    .setOnProgressListener{progress ->
-
-                    }
-                    .start(object : OnDownloadListener {
-                        override fun onError(error: com.downloader.Error?) {
+                if(!File("$dirPath/$fileName").exists()){
+                    requestsCount++
+                    Log.d("FILE_DOWNLOAD", "DOWNLOAD REQUEST $requestsCount")
+                    File("$dirPath/$fileName").createNewFile()
+                    PRDownloader.download(url, dirPath, fileName)
+                        .build()
+                        .setOnStartOrResumeListener { }
+                        .setOnPauseListener { }
+                        .setOnCancelListener {
 
                         }
+                        .setOnProgressListener{progress ->
 
-                        override fun onDownloadComplete() {
-                            Log.d("FILE_DOWNLOAD", "FILE DOWNLOAD IS COMPLETE")
                         }
+                        .start(object : OnDownloadListener {
+                            override fun onError(error: com.downloader.Error?) {
+                            }
 
-                    })
+                            override fun onDownloadComplete() {
+                                requestsCount--
+                                Log.d("FILE_DOWNLOAD", "FILE DOWNLOAD IS COMPLETE")
+                                if(requestsCount == 0){
+                                    showMainFragment(content)
+                                }
+                            }
+
+                        })
+                } else {
+                    Log.d("FILE_DOWNLOAD", "FILE EXISTS")
+                }
             }
         }
 
+
+        if(requestsCount == 0) {
+            showMainFragment(content)
+        }
+
+
+/*
 
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, MainFragment.create(content))
             .commit()
+
+ */
 
     }
 
