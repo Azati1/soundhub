@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.main
 
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,27 +10,31 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
-import androidx.core.content.FileProvider
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.AdsDto
 
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
-import com.downloader.utils.Utils
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import java.io.File
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
-class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
+class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundAction {
+
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
     private lateinit var dirPath: String
+    private var player: MediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,25 +84,36 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
     }
 
     private fun loadData() {
-        compositeDisposable.add(
-            model.getAds()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe ({
-                    Log.d("CDA123", it.admobAppId)
-                }, {t ->
-                    Log.d("CDA123", t.message)
-                }))
 
-        compositeDisposable.add(
-            model.getContent()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe ({
-                    onDataLoaded(it)
-                }, {t ->
-                    Log.d("CDA123", t.message)
-                }))
+        var retriesCount: Int = 0
+
+        compositeDisposable.add(Single.zip(
+            model.getAds(),
+            model.getContent(),
+            BiFunction { t1: AdsDto, t2: ContentDto ->
+                Log.d("SAS", "ZIP")
+                onDataLoaded(t2)
+            }).observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .doOnError {
+                retriesCount++
+                if (retriesCount == 5) {
+                    Toast.makeText(this, "Connection error", Toast.LENGTH_LONG).show()
+                    retriesCount = 0
+                }
+            }
+            .retryWhen { errors ->
+                Log.d("CDA123", "retryWhen")
+                errors.delay(2, TimeUnit.SECONDS)
+            }
+            .subscribe({ res ->
+                Log.d("SAS", "SUCC")
+            }, { err ->
+                Log.d("SAS", "ERR")
+            })
+        )
+
+
     }
 
     override fun onDestroy() {
@@ -115,7 +131,7 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
         }
     }
 
-    private fun showMainFragment(content: ContentDto){
+    private fun showMainFragment(content: ContentDto) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, MainFragment.create(content))
@@ -126,14 +142,13 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
 
         var requestsCount = 0
 
-
-        content.content.forEach{itemsList ->
-            itemsList.buttons.forEach{button ->
+        content.content.forEach { itemsList ->
+            itemsList.buttons.forEach { button ->
 
                 val fileName = Uri.parse(button.sound).lastPathSegment
                 val url = button.sound
 
-                if(!File("$dirPath/$fileName").exists()){
+                if (!File("$dirPath/$fileName").exists()) {
                     requestsCount++
                     Log.d("FILE_DOWNLOAD", "DOWNLOAD REQUEST $requestsCount")
                     File("$dirPath/$fileName").createNewFile()
@@ -144,7 +159,7 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
                         .setOnCancelListener {
 
                         }
-                        .setOnProgressListener{progress ->
+                        .setOnProgressListener { progress ->
 
                         }
                         .start(object : OnDownloadListener {
@@ -154,11 +169,10 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
                             override fun onDownloadComplete() {
                                 requestsCount--
                                 Log.d("FILE_DOWNLOAD", "FILE DOWNLOAD IS COMPLETE")
-                                if(requestsCount == 0){
+                                if (requestsCount == 0) {
                                     showMainFragment(content)
                                 }
                             }
-
                         })
                 } else {
                     Log.d("FILE_DOWNLOAD", "FILE EXISTS")
@@ -167,20 +181,33 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded {
         }
 
 
-        if(requestsCount == 0) {
+        if (requestsCount == 0) {
             showMainFragment(content)
         }
 
+    }
 
-/*
+    override fun onSoundStarted(path: String) {
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.container, MainFragment.create(content))
-            .commit()
+        player.reset()
 
- */
+        player.setDataSource(this, Uri.parse(path))
+        player.setOnPreparedListener {
+            player.start()
+        }
+        player.prepare()
 
     }
 
+    override fun onSoundStopped() {
+        player.stop()
+    }
+
 }
+
+interface OnSoundAction {
+    fun onSoundStarted(path: String)
+    fun onSoundStopped()
+}
+
+

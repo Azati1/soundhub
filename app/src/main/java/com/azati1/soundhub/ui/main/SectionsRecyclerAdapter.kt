@@ -18,7 +18,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 
-interface SectionsAdapterCallbacks{
+interface SectionsAdapterCallbacks {
     fun onImagesLoaded()
 
 }
@@ -31,7 +31,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     private var loadedCount: Int = 0
     private var createdTasks: Int = 0
 
-    fun setOnDataLoadedListener(callback: OnMainFragmentDataLoaded){
+    fun setOnDataLoadedListener(callback: OnMainFragmentDataLoaded) {
         dataLoadedListener = callback
     }
 
@@ -58,14 +58,15 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
             .load(sections[position].pictureUrl)
             .resize(5000, 5000)
             .onlyScaleDown()
-            .into(holder.image, object : Callback{
+            .into(holder.image, object : Callback {
                 override fun onSuccess() {
-                    if(++loadedCount == createdTasks)
+                    if (++loadedCount == createdTasks)
                         dataLoadedListener!!.onImagesLoaded()
 
                 }
+
                 override fun onError(e: Exception?) {
-                    if(++loadedCount == createdTasks)
+                    if (++loadedCount == createdTasks)
                         dataLoadedListener!!.onImagesLoaded()
                 }
             })
@@ -73,7 +74,9 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
             if (it.context is FragmentActivity) {
 
                 val fragment = SectionFragment.newInstance(sections[position])
-                fragment.sharedElementEnterTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(R.transition.name_transition)
+                fragment.sharedElementEnterTransition =
+                    TransitionInflater.from(holder.itemView.context)
+                        .inflateTransition(R.transition.name_transition)
 
                 (it.context as FragmentActivity).supportFragmentManager
                     .beginTransaction()
