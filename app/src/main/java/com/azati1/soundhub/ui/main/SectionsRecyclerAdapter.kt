@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ContentItem
-import com.azati1.soundhub.components.ContentItemDto
 import com.azati1.soundhub.ui.section.SectionFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -26,12 +25,12 @@ interface SectionsAdapterCallbacks {
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
 
     private val sections = mutableListOf<ContentItem>()
-    private var dataLoadedListener: OnMainFragmentDataLoaded? = null
+    private var dataLoadedListener: SectionRecyclerViewEvents? = null
 
     private var loadedCount: Int = 0
     private var createdTasks: Int = 0
 
-    fun setOnDataLoadedListener(callback: OnMainFragmentDataLoaded) {
+    fun setOnDataLoadedListener(callback: SectionRecyclerViewEvents) {
         dataLoadedListener = callback
     }
 
@@ -52,22 +51,41 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
 
+
+
+        Log.d("MSG", "onBindViewHolder")
+
+        if(holder.isInitialized){
+            Log.d("MSG", "holder is initialized")
+            return
+        } else {
+            Log.d("MSG", "holder is NOT initialized")
+        }
+
+
+        holder.setIsRecyclable(false)
+
         holder.title.text = sections[position].name
         createdTasks++
+
+
         Picasso.get()
             .load(sections[position].pictureUrl)
-            .resize(5000, 5000)
-            .onlyScaleDown()
+
+            .centerCrop()
+            .fit()
             .into(holder.image, object : Callback {
                 override fun onSuccess() {
+                    Log.d("MSG", "onSuccess")
                     if (++loadedCount == createdTasks)
                         dataLoadedListener!!.onImagesLoaded()
 
                 }
 
                 override fun onError(e: Exception?) {
-                    if (++loadedCount == createdTasks)
-                        dataLoadedListener!!.onImagesLoaded()
+                    Log.d("MSG", "onError")
+                   // if (++loadedCount == createdTasks)
+                   //     dataLoadedListener!!.onImagesLoaded()
                 }
             })
         holder.sectionItemView.setOnClickListener {
@@ -89,9 +107,38 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                     .commit()
             }
         }
+
+
+        holder.sectionItemView.setOnClickListener {
+            if (it.context is FragmentActivity) {
+
+                val fragment = SectionFragment.newInstance(sections[position])
+                fragment.sharedElementEnterTransition =
+                    TransitionInflater.from(holder.itemView.context)
+                        .inflateTransition(R.transition.name_transition)
+
+                (it.context as FragmentActivity).supportFragmentManager
+                    .beginTransaction()
+                    .addSharedElement(holder.title, holder.title.transitionName)
+
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(
+                        R.id.container,
+                        fragment
+                    )
+
+                    .addToBackStack(null)
+                    .commit()
+                dataLoadedListener?.onItemSelected()
+            }
+        }
+
+        holder.isInitialized = true
     }
 
     class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var isInitialized: Boolean = false
 
         val sectionItemView = itemView.findViewById<LinearLayout>(R.id.sectionItemView)
         val image = itemView.findViewById<ImageView>(R.id.sectionImage)

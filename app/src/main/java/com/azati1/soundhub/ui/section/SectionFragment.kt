@@ -26,6 +26,11 @@ class SectionFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_section, container, false)
     }
 
+    override fun onPause() {
+        super.onPause()
+        (context as? OnSoundAction)?.onSoundStopped()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

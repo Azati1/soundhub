@@ -129,8 +129,8 @@ class SectionContentFragment : Fragment() {
 
         Picasso.get()
             .load(item.picture)
-            .resize(5000, 5000)
-            .onlyScaleDown()
+            .centerCrop()
+            .fit()
             .placeholder(R.drawable.ic_dehaze_24px)
             .into(layout.findViewById<ImageView>(R.id.view))
 

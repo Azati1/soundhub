@@ -8,9 +8,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sectionsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/adsView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
 
     <FrameLayout
         android:id="@+id/adsView"

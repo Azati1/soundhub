@@ -26,9 +26,23 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundAction {
+class MainActivity : AppCompatActivity(),  OnSoundAction, SectionRecyclerViewEvents {
+    override fun onItemSelected() {
+
+    }
+
+    override fun onImagesLoaded() {
+        val fragement = supportFragmentManager.findFragmentByTag("splash")
+        fragement?.let {
+            supportFragmentManager
+                .beginTransaction()
+                .remove(fragement)
+                .commit()
+        }
+    }
 
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -121,15 +135,6 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundActio
         compositeDisposable.clear()
     }
 
-    override fun onImagesLoaded() {
-        val fragement = supportFragmentManager.findFragmentByTag("splash")
-        fragement?.let {
-            supportFragmentManager
-                .beginTransaction()
-                .remove(fragement)
-                .commit()
-        }
-    }
 
     private fun showMainFragment(content: ContentDto) {
         supportFragmentManager
@@ -142,16 +147,20 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundActio
 
         var requestsCount = 0
 
+        var loading : ArrayList<String> = arrayListOf()
+
+
         content.content.forEach { itemsList ->
             itemsList.buttons.forEach { button ->
 
                 val fileName = Uri.parse(button.sound).lastPathSegment
                 val url = button.sound
 
-                if (!File("$dirPath/$fileName").exists()) {
+                if (!loading.contains(fileName) && !File("$dirPath/$fileName").exists()) {
                     requestsCount++
                     Log.d("FILE_DOWNLOAD", "DOWNLOAD REQUEST $requestsCount")
-                    File("$dirPath/$fileName").createNewFile()
+                    loading.add(fileName!!)
+                    //File("$dirPath/$fileName").createNewFile()
                     PRDownloader.download(url, dirPath, fileName)
                         .build()
                         .setOnStartOrResumeListener { }
@@ -170,6 +179,7 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundActio
                                 requestsCount--
                                 Log.d("FILE_DOWNLOAD", "FILE DOWNLOAD IS COMPLETE")
                                 if (requestsCount == 0) {
+
                                     showMainFragment(content)
                                 }
                             }
@@ -182,7 +192,9 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundActio
 
 
         if (requestsCount == 0) {
+
             showMainFragment(content)
+
         }
 
     }

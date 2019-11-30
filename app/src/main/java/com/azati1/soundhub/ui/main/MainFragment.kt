@@ -2,11 +2,13 @@ package com.azati1.soundhub.ui.main
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.Content
@@ -14,18 +16,26 @@ import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.components.ContentItem
 import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), SectionRecyclerViewEvents {
+    override fun onItemSelected() {
+        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.INVISIBLE
+    }
+
+    override fun onImagesLoaded() {
+        (context as SectionRecyclerViewEvents)?.let {
+            it.onImagesLoaded()
+        }
+        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.VISIBLE
+    }
 
     private var content: Content? = null
-    private var mainFragmentCallbacks: OnMainFragmentDataLoaded? = null
+    private var mainFragmentCallbacks: SectionRecyclerViewEvents? = null
+    private var rootView: View? = null
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is OnMainFragmentDataLoaded){
-            mainFragmentCallbacks =  context
-        } else {
-            throw RuntimeException(context.toString() + " must implement MainFragmentCallbacks")
-        }
+
 
     }
 
@@ -33,7 +43,21 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        if(rootView != null){
+            Log.d("MSG", "view restored")
+            return rootView
+        } else {
+            Log.d("MSG", "view inflated")
+            rootView = inflater.inflate(R.layout.fragment_main, container, false)
+            return rootView
+        }
+
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("MSG", "onDetach is called")
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,16 +70,23 @@ class MainFragment : Fragment() {
 
     private fun initRecyclerView(content: List<ContentItem>) {
         sectionsRecyclerView.layoutManager = LinearLayoutManager(context)
+        sectionsRecyclerView.setHasFixedSize(true)
+        sectionsRecyclerView.setItemViewCacheSize(20)
+
         val sectionsAdapter = SectionsRecyclerAdapter()
         sectionsRecyclerView.adapter = sectionsAdapter
         sectionsAdapter.addItems(
             content
         )
-        sectionsAdapter.setOnDataLoadedListener(mainFragmentCallbacks!!)
+        sectionsAdapter.setOnDataLoadedListener(this)
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d("MSG", "onPause is called")
 
+    }
 
     companion object {
         @JvmStatic
@@ -86,7 +117,8 @@ class MainFragment : Fragment() {
     }
 }
 
-interface OnMainFragmentDataLoaded {
+interface SectionRecyclerViewEvents {
     fun onImagesLoaded()
+    fun onItemSelected()
 
 }
