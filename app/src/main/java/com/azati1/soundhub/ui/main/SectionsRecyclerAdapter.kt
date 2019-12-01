@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ContentItem
+import com.azati1.soundhub.ui.section.SECTION_CONTENT_FRAGMENT
 import com.azati1.soundhub.ui.section.SectionFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -84,29 +85,9 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
 
                 override fun onError(e: Exception?) {
                     Log.d("MSG", "onError")
-                   // if (++loadedCount == createdTasks)
-                   //     dataLoadedListener!!.onImagesLoaded()
                 }
             })
-        holder.title.setOnClickListener {
-            if (it.context is FragmentActivity) {
 
-                val fragment = SectionFragment.newInstance(sections[position])
-                fragment.sharedElementEnterTransition =
-                    TransitionInflater.from(holder.itemView.context)
-                        .inflateTransition(R.transition.name_transition)
-
-                (it.context as FragmentActivity).supportFragmentManager
-                    .beginTransaction()
-                    .addSharedElement(holder.title, holder.title.transitionName)
-                    .replace(
-                        R.id.container,
-                        fragment
-                    )
-                    .addToBackStack(null)
-                    .commit()
-            }
-        }
 
 
         holder.sectionItemView.setOnClickListener {
@@ -120,11 +101,11 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                 (it.context as FragmentActivity).supportFragmentManager
                     .beginTransaction()
                     .addSharedElement(holder.title, holder.title.transitionName)
-
-                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                     .replace(
                         R.id.container,
-                        fragment
+                        fragment,
+                        SECTION_CONTENT_FRAGMENT
                     )
 
                     .addToBackStack(null)
@@ -139,7 +120,6 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var isInitialized: Boolean = false
-
         val sectionItemView = itemView.findViewById<LinearLayout>(R.id.sectionItemView)
         val image = itemView.findViewById<ImageView>(R.id.sectionImage)
         val title = itemView.findViewById<TextView>(R.id.sectionTitle)

@@ -41,7 +41,7 @@
         android:id="@+id/stopButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_square"
+        android:src="@drawable/ic_stop"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"

@@ -13,6 +13,7 @@ import android.view.Window
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.AdsDto
 import com.azati1.soundhub.components.ContentDto
+import com.azati1.soundhub.ui.section.SECTION_CONTENT_FRAGMENT
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
@@ -191,6 +192,21 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     }
 
+    override fun onBackPressed() {
+        val fragment =
+            this.supportFragmentManager.findFragmentByTag(SECTION_CONTENT_FRAGMENT)
+
+
+        (fragment as? OnBackPressed)?.let{
+            if(it.onBackPressed()){
+                super.onBackPressed()
+            }
+            return
+        }
+
+        super.onBackPressed()
+    }
+
     override fun onSoundStarted(path: String) {
 
         player.reset()
@@ -228,4 +244,7 @@ interface OnSoundAction {
     fun onSoundStopped()
 }
 
+interface OnBackPressed {
+    fun onBackPressed() : Boolean
+}
 

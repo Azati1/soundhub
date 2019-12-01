@@ -1,6 +1,7 @@
 package com.azati1.soundhub.ui.section
 
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,19 +12,43 @@ import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.ContentItem
 import com.azati1.soundhub.components.ContentItemDto
+import com.azati1.soundhub.ui.main.OnBackPressed
 import com.azati1.soundhub.ui.main.OnSoundAction
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_section.*
+import java.util.concurrent.TimeUnit
 
-class SectionFragment : Fragment() {
+const val SECTION_CONTENT_FRAGMENT = "SECTION_CONTENT"
+class SectionFragment : Fragment(), OnBackPressed {
 
     private var contentItem: ContentItem? = null
 
+    var canPop: Boolean = false
+    lateinit var timerSubscribe: Disposable
+
+    override fun onBackPressed(): Boolean {
+        return canPop
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_section, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        timerSubscribe = Observable.interval(420, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe{
+                canPop = true
+                timerSubscribe.dispose()
+            }
     }
 
     override fun onPause() {
@@ -44,6 +69,7 @@ class SectionFragment : Fragment() {
             val buttons = mutableListOf<ButtonItem>()
             buttons.addAll(it.buttons)
             buttons.addAll(it.buttons)
+
             sectionPagerAdapter.addItems(buttons)
         }
 

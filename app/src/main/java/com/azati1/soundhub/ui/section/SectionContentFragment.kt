@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.section
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -15,15 +16,31 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
+import com.azati1.soundhub.ui.main.OnBackPressed
 import com.azati1.soundhub.ui.main.OnSoundAction
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_section_content.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import javax.xml.datatype.DatatypeConstants.SECONDS
 
-class SectionContentFragment : Fragment() {
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.TimeUnit
+
+
+class SectionContentFragment : Fragment(){
+
+
+
 
     lateinit var player: MediaPlayer
-
     lateinit var sectionPage: SectionPagerAdapter.SectionPage
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -131,7 +148,7 @@ class SectionContentFragment : Fragment() {
             .load(item.picture)
             .centerCrop()
             .fit()
-            .placeholder(R.drawable.ic_dehaze_24px)
+            .placeholder(R.drawable.ic_music)
             .into(layout.findViewById<ImageView>(R.id.view))
 
         layout.setOnClickListener {
