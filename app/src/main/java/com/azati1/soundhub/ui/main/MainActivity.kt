@@ -29,26 +29,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-<<<<<<< HEAD
 
-class MainActivity : AppCompatActivity(),  OnSoundAction, SectionRecyclerViewEvents {
-    override fun onItemSelected() {
-
-    }
-
-    override fun onImagesLoaded() {
-        val fragement = supportFragmentManager.findFragmentByTag("splash")
-        fragement?.let {
-            supportFragmentManager
-                .beginTransaction()
-                .remove(fragement)
-                .commit()
-        }
-    }
-=======
-class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundAction {
->>>>>>> w
-
+class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents  {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
@@ -223,6 +205,20 @@ class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundActio
 
     override fun onSoundStopped() {
         player.stop()
+    }
+
+    override fun onImagesLoaded() {
+        val fragement = supportFragmentManager.findFragmentByTag("splash")
+        fragement?.let {
+            supportFragmentManager
+                .beginTransaction()
+                .remove(fragement)
+                .commit()
+        }
+    }
+
+    override fun onItemSelected() {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }
