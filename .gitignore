@@ -54,3 +54,6 @@ node_modules/
 libraries/tools/kotlin-test-js-runner/lib/
 libraries/tools/kotlin-source-map-loader/lib/
 local.properties
+.idea/caches/build_file_checksums.ser
+
+.idea/codeStyles/Project.xml

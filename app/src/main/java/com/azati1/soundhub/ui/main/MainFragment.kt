@@ -14,6 +14,7 @@ import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.Content
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.components.ContentItem
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), SectionRecyclerViewEvents {
@@ -62,10 +63,13 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         content = arguments?.getSerializable("content") as Content?
         content?.let {
             initRecyclerView(it.content)
         }
+        val adRequest = AdRequest.Builder().build()
+        adsView.loadAd(adRequest)
     }
 
     private fun initRecyclerView(content: List<ContentItem>) {

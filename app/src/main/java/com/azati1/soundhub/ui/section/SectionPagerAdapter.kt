@@ -1,11 +1,9 @@
 package com.azati1.soundhub.ui.section
 
-import android.media.MediaPlayer
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.azati1.soundhub.components.ButtonItem
-import com.azati1.soundhub.components.ContentItem
 
 const val SECTION_SIZE = 4
 

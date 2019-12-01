@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_dehaze_24px"
                 android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

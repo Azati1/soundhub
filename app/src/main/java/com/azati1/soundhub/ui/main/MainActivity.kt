@@ -12,11 +12,12 @@ import android.view.Gravity
 import android.view.Window
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.AdsDto
-
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
+import com.downloader.utils.Utils
+import com.google.android.gms.ads.MobileAds
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,6 +29,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+<<<<<<< HEAD
 
 class MainActivity : AppCompatActivity(),  OnSoundAction, SectionRecyclerViewEvents {
     override fun onItemSelected() {
@@ -43,6 +45,9 @@ class MainActivity : AppCompatActivity(),  OnSoundAction, SectionRecyclerViewEve
                 .commit()
         }
     }
+=======
+class MainActivity : AppCompatActivity(), OnMainFragmentDataLoaded, OnSoundAction {
+>>>>>>> w
 
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -59,6 +64,11 @@ class MainActivity : AppCompatActivity(),  OnSoundAction, SectionRecyclerViewEve
         initToolbar()
         initFragment()
         loadData()
+        initAds()
+    }
+
+    private fun initAds() {
+        MobileAds.initialize(this)
     }
 
     private fun initFragment() {

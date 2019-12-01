@@ -88,7 +88,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                    //     dataLoadedListener!!.onImagesLoaded()
                 }
             })
-        holder.sectionItemView.setOnClickListener {
+        holder.title.setOnClickListener {
             if (it.context is FragmentActivity) {
 
                 val fragment = SectionFragment.newInstance(sections[position])
