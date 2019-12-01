@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.ContentItem
@@ -18,6 +19,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import kotlinx.android.synthetic.main.fragment_section.*
 import java.util.concurrent.TimeUnit
 
@@ -62,6 +66,8 @@ class SectionFragment : Fragment(), OnBackPressed {
 
         val sectionPagerAdapter = SectionPagerAdapter(childFragmentManager)
 
+        createAdBanner()
+
         contentItem = arguments?.getSerializable("item") as ContentItem?
 
         contentItem?.let {
@@ -69,7 +75,6 @@ class SectionFragment : Fragment(), OnBackPressed {
             val buttons = mutableListOf<ButtonItem>()
             buttons.addAll(it.buttons)
             buttons.addAll(it.buttons)
-
             sectionPagerAdapter.addItems(buttons)
         }
 
@@ -88,6 +93,18 @@ class SectionFragment : Fragment(), OnBackPressed {
         stopButton.setOnClickListener {
             (context as? OnSoundAction)?.onSoundStopped()
         }
+    }
+
+    private fun createAdBanner() {
+        val adView = AdView(context)
+        adView.adSize = AdSize.SMART_BANNER;
+        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        ad_container.addView(adView, params)
     }
 
     companion object {

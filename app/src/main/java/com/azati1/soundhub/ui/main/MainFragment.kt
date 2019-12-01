@@ -68,8 +68,6 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
         content?.let {
             initRecyclerView(it.content)
         }
-        val adRequest = AdRequest.Builder().build()
-        adsView.loadAd(adRequest)
     }
 
     private fun initRecyclerView(content: List<ContentItem>) {
