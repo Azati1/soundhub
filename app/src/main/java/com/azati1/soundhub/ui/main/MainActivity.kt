@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     private fun showPrivacyAlert(url: String, cancellable: Boolean){
-        if(!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)){
+        if(!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false) || cancellable){
             lateinit var dialog: AlertDialog
             var webView = WebView(applicationContext)
             webView.loadUrl(url)
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         val builder = AlertDialog.Builder(this)
         builder.setItems(menuItems) { dialog, item ->
             when (item) {
-                0 -> Toast.makeText(this, "Privacy Policy", Toast.LENGTH_SHORT).show()
+                0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, true)
                 1 -> Toast.makeText(this, "Personalized Ads", Toast.LENGTH_SHORT).show()
                 2 -> Toast.makeText(this, "More apps", Toast.LENGTH_SHORT).show()
             }
