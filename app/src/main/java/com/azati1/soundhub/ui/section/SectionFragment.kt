@@ -50,6 +50,7 @@ class SectionFragment : Fragment(), OnBackPressed {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        context.applicationContext
         timerSubscribe = Observable.interval(420, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

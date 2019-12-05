@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.main
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.AdsDto
 import com.azati1.soundhub.components.ContentDto
@@ -32,8 +36,12 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-
+private const val PREFS_NAME: String = "PREFERENCES"
+private const val ACCEPTED: String = "ACCEPTED"
 class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents, OnPageShow {
+
+
+
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
@@ -42,6 +50,9 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private var pageShowCounter = 0
 
     private lateinit var interstitialAd: InterstitialAd
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +64,54 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         initFragment()
         loadData()
         initAds()
+        showPrivacyAlert("http://www.google.com/", false)
+
+
+    }
+
+    private fun showPrivacyAlert(url: String, cancellable: Boolean){
+        if(!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)){
+            lateinit var dialog: AlertDialog
+            var webView = WebView(this)
+            webView.loadUrl(url)
+
+            webView.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    if(!cancellable)
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    Log.d("MSG", "PAGE LOAD FINISHED")
+                }
+
+            }
+            webView.webChromeClient = WebChromeClient()
+
+
+            var builder = AlertDialog.Builder(this)
+            builder
+                .setTitle(R.string.privacy_policy)
+                .setView(webView)
+                .setCancelable(cancellable)
+
+            if(!cancellable){
+                builder.setPositiveButton(R.string.accept, null)
+                    .setNegativeButton(R.string.decline, null)
+            }
+            dialog = builder.create()
+            dialog.show()
+            if(!cancellable){
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(ACCEPTED, true).commit()
+                    dialog.dismiss()
+                }
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+                    finish()
+                }
+            }
+
+
+        }
     }
 
     private fun initAds() {
