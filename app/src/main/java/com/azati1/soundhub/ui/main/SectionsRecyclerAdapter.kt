@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso
 
 interface SectionsAdapterCallbacks {
     fun onImagesLoaded()
-
 }
 
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
@@ -90,7 +89,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
 
 
 
-        holder.sectionItemView.setOnClickListener {
+        holder.title.setOnClickListener {
             if (it.context is FragmentActivity) {
 
                 val fragment = SectionFragment.newInstance(sections[position])
@@ -112,6 +111,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
                     .commit()
                 dataLoadedListener?.onItemSelected()
             }
+            (it.context as? OnPageShow)?.onPageShowed()
         }
 
         holder.isInitialized = true

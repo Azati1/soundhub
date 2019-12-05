@@ -18,6 +18,9 @@ import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.downloader.utils.Utils
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -30,13 +33,15 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-
-class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents  {
+class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents, OnPageShow {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
     private lateinit var dirPath: String
     private var player: MediaPlayer = MediaPlayer()
+    private var pageShowCounter = 0
+
+    private lateinit var interstitialAd: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +57,22 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     private fun initAds() {
         MobileAds.initialize(this)
+
+        val adRequest = AdRequest.Builder().build()
+        interstitialAd = InterstitialAd(this)
+
+        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        interstitialAd.adListener = object: AdListener() {
+            override fun onAdClosed() {
+                interstitialAd.loadAd(AdRequest.Builder().build())
+            }
+        }
+        interstitialAd.loadAd(adRequest)
+    }
+
+    private fun displayInterstitial() {
+        if (interstitialAd.isLoaded)
+            interstitialAd.show()
     }
 
     private fun initFragment() {
@@ -237,6 +258,13 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun onPageShowed() {
+        pageShowCounter++
+        if (pageShowCounter > 0 && pageShowCounter % 5 == 0) {
+            displayInterstitial()
+        }
+    }
+
 }
 
 interface OnSoundAction {
@@ -246,5 +274,9 @@ interface OnSoundAction {
 
 interface OnBackPressed {
     fun onBackPressed() : Boolean
+}
+
+interface OnPageShow {
+    fun onPageShowed()
 }
 

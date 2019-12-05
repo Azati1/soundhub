@@ -3,9 +3,12 @@ package com.azati1.soundhub.ui.section
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.azati1.soundhub.components.AdContentItem
 import com.azati1.soundhub.components.ButtonItem
+import com.azati1.soundhub.components.InnerContentItem
+import kotlin.random.Random
 
-const val SECTION_SIZE = 4
+const val SECTION_SIZE = 3
 
 class SectionPagerAdapter(fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -27,9 +30,21 @@ class SectionPagerAdapter(fragmentManager: FragmentManager) :
         //sectionContents.addAll(items)
         val separated = items.chunked(SECTION_SIZE)
 
+        val contentList = arrayListOf<List<InnerContentItem>>()
+
+        separated.forEach {
+            val list = arrayListOf<InnerContentItem>()
+            list.addAll(it)
+
+            val adPosition = Random.nextInt(0, list.size)
+            list.add(adPosition, AdContentItem())
+
+            contentList.add(list)
+        }
+
         val pages: ArrayList<SectionPage> = arrayListOf()
 
-        separated.forEach { item ->
+        contentList.forEach { item ->
             pages.add(SectionPage(item))
         }
 
@@ -38,7 +53,7 @@ class SectionPagerAdapter(fragmentManager: FragmentManager) :
     }
 
     class SectionPage(
-        val soundbordItems: List<ButtonItem>
+        val soundbordItems: List<InnerContentItem>
     )
 
 }

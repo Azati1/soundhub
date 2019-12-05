@@ -4,20 +4,23 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.ButtonItem
+import com.azati1.soundhub.components.InnerContentItem
 import com.azati1.soundhub.ui.main.OnBackPressed
 import com.azati1.soundhub.ui.main.OnSoundAction
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.formats.UnifiedNativeAd
+import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_section_content.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,7 +29,9 @@ import javax.xml.datatype.DatatypeConstants.SECONDS
 
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_section.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class SectionContentFragment : Fragment(){
@@ -88,7 +93,7 @@ class SectionContentFragment : Fragment(){
         content.addView(horizontalLinearLayout)
     }
 
-    private fun buildContentLine(items: List<ButtonItem>) {
+    private fun buildContentLine(items: List<InnerContentItem>) {
         if (items.size == 2) {
 
             val horizontalLinearLayout = LinearLayout(context)
@@ -131,7 +136,7 @@ class SectionContentFragment : Fragment(){
         }
     }
 
-    private fun buildSoundboardItem(item: ButtonItem): View {
+    private fun buildSoundboardItem(item: InnerContentItem): View {
         val layout = LayoutInflater.from(context).inflate(R.layout.soundboard_item, null, false)
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -139,30 +144,70 @@ class SectionContentFragment : Fragment(){
         )
         layoutParams.weight = 1.0f
         layout.layoutParams = layoutParams
-        layout.findViewById<TextView>(R.id.item_text).text = item.name
-        layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
-            Toast.makeText(context, item.picture, Toast.LENGTH_SHORT).show()
-        }
 
-        Picasso.get()
-            .load(item.picture)
-            .centerCrop()
-            .fit()
-            .placeholder(R.drawable.ic_music)
-            .into(layout.findViewById<ImageView>(R.id.view))
+        if (item is ButtonItem) {
 
-        layout.setOnClickListener {
+            layout.findViewById<AppCompatImageView>(R.id.view).visibility = View.VISIBLE
+            layout.findViewById<TextView>(R.id.item_text).text = item.name
+            layout.findViewById<ConstraintLayout>(R.id.item_container).setOnClickListener {
+                Toast.makeText(context, item.picture, Toast.LENGTH_SHORT).show()
+            }
 
-            (context as? OnSoundAction)?.onSoundStarted(
-                context!!.applicationInfo.dataDir + "/" + Uri.parse(
-                    item.sound
-                ).lastPathSegment
-            )
+            Picasso.get()
+                .load(item.picture)
+                .centerCrop()
+                .fit()
+                .placeholder(R.drawable.ic_music)
+                .into(layout.findViewById<ImageView>(R.id.view))
 
+            layout.setOnClickListener {
+
+                (context as? OnSoundAction)?.onSoundStarted(
+                    context!!.applicationInfo.dataDir + "/" + Uri.parse(
+                        item.sound
+                    ).lastPathSegment
+                )
+
+
+            }
+        } else {
+
+            val adContainer = layout.findViewById<LinearLayout>(R.id.item_content)
+            adContainer.visibility = View.VISIBLE
+
+            val adLoader = AdLoader.Builder(context, "ca-app-pub-3940256099942544/2247696110")
+                .forUnifiedNativeAd {
+
+                    if (isAdded) {
+                        val unifiedNativeAdView =
+                            layoutInflater.inflate(R.layout.native_ad_layout, null)
+
+                        if (unifiedNativeAdView is UnifiedNativeAdView) {
+                            mapUnifiedNativeAdToLayout(it, unifiedNativeAdView)
+                            adContainer.removeAllViews()
+                            adContainer.addView(unifiedNativeAdView)
+                        }
+                    }
+
+                }.build()
+            adLoader.loadAd(AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build())
 
         }
 
         return layout
+    }
+
+    private fun mapUnifiedNativeAdToLayout(adFromGoogle: UnifiedNativeAd, myAdView: UnifiedNativeAdView) {
+
+        myAdView.iconView = myAdView.findViewById(R.id.ad_icon)
+
+        if (adFromGoogle.icon == null) {
+            myAdView.iconView.visibility = View.GONE
+        } else {
+            (myAdView.iconView as ImageView).setImageDrawable(adFromGoogle.icon.drawable)
+        }
+
+        myAdView.setNativeAd(adFromGoogle)
     }
 
     companion object {

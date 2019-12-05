@@ -6,4 +6,4 @@ class ButtonItem(
     val name: String,
     val sound: String,
     val picture: String
-) : Serializable
+) : Serializable, InnerContentItem()
