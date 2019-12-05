@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private fun showPrivacyAlert(url: String, cancellable: Boolean){
         if(!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)){
             lateinit var dialog: AlertDialog
-            var webView = WebView(this)
+            var webView = WebView(applicationContext)
             webView.loadUrl(url)
 
             webView.webViewClient = object : WebViewClient() {
@@ -201,6 +201,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             }
             .subscribe({ res ->
                 Log.d("SAS", "SUCC")
+                showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, false)
             }, { err ->
                 Log.d("SAS", "ERR")
             })
@@ -225,7 +226,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private fun onDataLoaded(content: ContentDto) {
 
 
-        showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, false)
+
 
         var requestsCount = 0
 
