@@ -57,3 +57,5 @@ local.properties
 .idea/caches/build_file_checksums.ser
 
 .idea/codeStyles/Project.xml
+
+.idea/assetWizardSettings.xml

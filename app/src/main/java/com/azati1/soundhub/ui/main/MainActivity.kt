@@ -27,6 +27,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardedVideoAd
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private var pageShowCounter = 0
 
     private lateinit var interstitialAd: InterstitialAd
+    private lateinit var rewardedVideoAd: RewardedVideoAd
 
 
 
@@ -115,6 +117,11 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        rewardedVideoAd.pause(this)
+    }
+
     private fun initAds() {
         MobileAds.initialize(this)
 
@@ -128,6 +135,10 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             }
         }
         interstitialAd.loadAd(adRequest)
+
+        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+
+        rewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", AdRequest.Builder().build())
     }
 
     private fun displayInterstitial() {
@@ -149,6 +160,10 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private fun initToolbar() {
         toolbarButton.setOnClickListener {
             showMenu()
+        }
+        adsButton.setOnClickListener {
+            if (rewardedVideoAd.isLoaded)
+                rewardedVideoAd.show()
         }
     }
 
@@ -212,6 +227,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     override fun onDestroy() {
         super.onDestroy()
+        rewardedVideoAd.destroy(this)
         compositeDisposable.clear()
     }
 
