@@ -14,6 +14,9 @@ import java.util.concurrent.TimeUnit
 
 class AppComponent : Application() {
 
+    private var ads: AdsDto? = null
+
+
     companion object {
 
         var apiService: ApiService? = null
@@ -41,4 +44,13 @@ class AppComponent : Application() {
         super.onCreate()
         PRDownloader.initialize(applicationContext)
     }
+
+    public fun setAdsDto(adsDto: AdsDto){
+        ads = adsDto
+    }
+
+    public fun getAdsDto(): AdsDto?{
+        return ads
+    }
+
 }

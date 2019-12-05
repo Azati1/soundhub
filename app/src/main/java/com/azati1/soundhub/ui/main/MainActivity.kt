@@ -16,6 +16,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.azati1.soundhub.R
 import com.azati1.soundhub.components.AdsDto
+import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.ui.section.SECTION_CONTENT_FRAGMENT
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         initFragment()
         loadData()
         initAds()
-        showPrivacyAlert("http://www.google.com/", false)
+
 
 
     }
@@ -179,7 +180,12 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             model.getContent(),
             BiFunction { t1: AdsDto, t2: ContentDto ->
                 Log.d("SAS", "ZIP")
+                (applicationContext as AppComponent).setAdsDto(t1)
+
                 onDataLoaded(t2)
+
+
+
             }).observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .doOnError {
@@ -217,6 +223,9 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     private fun onDataLoaded(content: ContentDto) {
+
+
+        showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, false)
 
         var requestsCount = 0
 
