@@ -1,10 +1,8 @@
 package com.azati1.soundhub.ui.section
 
-import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,38 +12,20 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.azati1.soundhub.R
+import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.InnerContentItem
-import com.azati1.soundhub.ui.main.OnBackPressed
 import com.azati1.soundhub.ui.main.OnSoundAction
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_section_content.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import javax.xml.datatype.DatatypeConstants.SECONDS
-
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_section.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
-
 
 class SectionContentFragment : Fragment(){
 
-
-
-
     lateinit var player: MediaPlayer
     lateinit var sectionPage: SectionPagerAdapter.SectionPage
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -174,23 +154,25 @@ class SectionContentFragment : Fragment(){
 
             val adContainer = layout.findViewById<LinearLayout>(R.id.item_content)
             adContainer.visibility = View.VISIBLE
+            val adsDto = (context?.applicationContext as AppComponent).getAdsDto()
+            adsDto?.let {
+                val adLoader = AdLoader.Builder(context, adsDto.admobNativeId)
+                    .forUnifiedNativeAd {
 
-            val adLoader = AdLoader.Builder(context, "ca-app-pub-3940256099942544/2247696110")
-                .forUnifiedNativeAd {
+                        if (isAdded) {
+                            val unifiedNativeAdView =
+                                layoutInflater.inflate(R.layout.native_ad_layout, null)
 
-                    if (isAdded) {
-                        val unifiedNativeAdView =
-                            layoutInflater.inflate(R.layout.native_ad_layout, null)
-
-                        if (unifiedNativeAdView is UnifiedNativeAdView) {
-                            mapUnifiedNativeAdToLayout(it, unifiedNativeAdView)
-                            adContainer.removeAllViews()
-                            adContainer.addView(unifiedNativeAdView)
+                            if (unifiedNativeAdView is UnifiedNativeAdView) {
+                                mapUnifiedNativeAdToLayout(it, unifiedNativeAdView)
+                                adContainer.removeAllViews()
+                                adContainer.addView(unifiedNativeAdView)
+                            }
                         }
-                    }
 
-                }.build()
-            adLoader.loadAd(AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build())
+                    }.build()
+                adLoader.loadAd(AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build())
+            }
 
         }
 

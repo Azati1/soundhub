@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#ffffff"
+    android:background="@drawable/imageedit_2_7087063346"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,7 +21,7 @@
         style="@style/SpinKitView.Large.ThreeBounce"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:SpinKit_Color="@color/colorPrimary"
+        app:SpinKit_Color="#fff"
         app:layout_constraintEnd_toEndOf="@+id/application_icon"
         app:layout_constraintStart_toStartOf="@+id/application_icon"
         app:layout_constraintTop_toBottomOf="@+id/application_icon" />

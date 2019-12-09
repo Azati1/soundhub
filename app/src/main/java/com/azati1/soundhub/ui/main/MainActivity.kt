@@ -15,35 +15,37 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.azati1.soundhub.R
+import com.azati1.soundhub.RateAppDialogFragment
 import com.azati1.soundhub.components.AdsDto
 import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ContentDto
+import com.azati1.soundhub.components.CrossPromo
 import com.azati1.soundhub.ui.section.SECTION_CONTENT_FRAGMENT
 import com.azati1.soundhub.ui.splash.SplashScreenFragment
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
-import com.downloader.utils.Utils
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardedVideoAd
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.io.File
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-private const val PREFS_NAME: String = "PREFERENCES"
+
+const val PREFS_NAME: String = "PREFERENCES"
 private const val ACCEPTED: String = "ACCEPTED"
-class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents, OnPageShow {
+ const val IS_MARKET_PAGE_SHOWED = "IS_MARKET_PAGE_SHOWED"
 
-
-
+class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents, OnPageShow, OnRateAppAction {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val model = MainModel()
@@ -51,11 +53,10 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private var player: MediaPlayer = MediaPlayer()
     private var pageShowCounter = 0
 
-    private lateinit var interstitialAd: InterstitialAd
-    private lateinit var rewardedVideoAd: RewardedVideoAd
+    private var interstitialAd: InterstitialAd? = null
+    private var rewardedVideoAd: RewardedVideoAd? = null
 
-
-
+    private val rateAppSubject = PublishSubject.create<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,84 +67,95 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         initToolbar()
         initFragment()
         loadData()
-        initAds()
-
-
 
     }
 
-    private fun showPrivacyAlert(url: String, cancellable: Boolean){
-        if(!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false) || cancellable){
-            lateinit var dialog: AlertDialog
-            var webView = WebView(applicationContext)
-            webView.loadUrl(url)
+    private fun showPrivacyAlert(url: String, title: String) {
+        lateinit var dialog: AlertDialog
 
-            webView.webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    if(!cancellable)
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                    Log.d("MSG", "PAGE LOAD FINISHED")
-                }
+        var webView = WebView(applicationContext)
+        webView.loadUrl(url)
+        webView.settings.javaScriptEnabled = true
+        webView.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
 
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                Log.d("MSG", "PAGE LOAD FINISHED")
             }
-            webView.webChromeClient = WebChromeClient()
 
+        }
+        webView.webChromeClient = WebChromeClient()
+
+        var builder = AlertDialog.Builder(this)
+        builder
+            .setTitle(title)
+            .setView(webView)
+
+        dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showFirstPrivacyAlert() {
+        if (!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)) {
+            lateinit var dialog: AlertDialog
 
             var builder = AlertDialog.Builder(this)
             builder
-                .setTitle(R.string.privacy_policy)
-                .setView(webView)
-                .setCancelable(cancellable)
+                .setTitle(getString(R.string.attention))
+                .setMessage(getString(R.string.first_dialog_text))
+                .setCancelable(false)
+                .setPositiveButton(R.string.accept, null)
+                .setNegativeButton(R.string.decline, null)
 
-            if(!cancellable){
-                builder.setPositiveButton(R.string.accept, null)
-                    .setNegativeButton(R.string.decline, null)
-            }
             dialog = builder.create()
             dialog.show()
-            if(!cancellable){
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                    getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(ACCEPTED, true).commit()
-                    dialog.dismiss()
-                }
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-                    finish()
-                }
-            }
 
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(ACCEPTED, true).commit()
+                dialog.dismiss()
+            }
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+                finish()
+            }
 
         }
     }
 
     override fun onPause() {
         super.onPause()
-        rewardedVideoAd.pause(this)
+        rewardedVideoAd?.pause(this)
     }
 
     private fun initAds() {
-        MobileAds.initialize(this)
 
-        val adRequest = AdRequest.Builder().build()
-        interstitialAd = InterstitialAd(this)
+        val adsDto = (applicationContext as AppComponent).getAdsDto()
 
-        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        interstitialAd.adListener = object: AdListener() {
-            override fun onAdClosed() {
-                interstitialAd.loadAd(AdRequest.Builder().build())
+        adsDto?.let {
+            MobileAds.initialize(this, adsDto.admobAppId)
+
+            val adRequest = AdRequest.Builder().build()
+            interstitialAd = InterstitialAd(this)
+
+            interstitialAd?.adUnitId = adsDto.admobInterstitialId
+            interstitialAd?.adListener = object: AdListener() {
+                override fun onAdClosed() {
+                    interstitialAd?.loadAd(AdRequest.Builder().build())
+                }
             }
+            interstitialAd?.loadAd(adRequest)
+
+            rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+
+            rewardedVideoAd?.loadAd(adsDto.admobRewardId, AdRequest.Builder().build())
         }
-        interstitialAd.loadAd(adRequest)
-
-        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-
-        rewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", AdRequest.Builder().build())
     }
 
     private fun displayInterstitial() {
-        if (interstitialAd.isLoaded)
-            interstitialAd.show()
+        interstitialAd?.let {
+            if (it.isLoaded)
+                it.show()
+        }
     }
 
     private fun initFragment() {
@@ -162,19 +174,20 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             showMenu()
         }
         adsButton.setOnClickListener {
-            if (rewardedVideoAd.isLoaded)
-                rewardedVideoAd.show()
+            rewardedVideoAd?.let {
+                if (it.isLoaded)
+                    it.show()
+            }
         }
     }
 
     private fun showMenu() {
-        val menuItems = arrayOf<CharSequence>("Privacy Policy", "Personalized Ads", "More apps")
+        val menuItems = arrayOf<CharSequence>("Privacy Policy", "Personalized Ads")
         val builder = AlertDialog.Builder(this)
         builder.setItems(menuItems) { dialog, item ->
             when (item) {
-                0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, true)
-                1 -> Toast.makeText(this, "Personalized Ads", Toast.LENGTH_SHORT).show()
-                2 -> Toast.makeText(this, "More apps", Toast.LENGTH_SHORT).show()
+                0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, "Privacy Policy")
+                1 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl, "Personalized Ads")
             }
         }
         val menu = builder.create()
@@ -193,20 +206,19 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         compositeDisposable.add(Single.zip(
             model.getAds(),
             model.getContent(),
-            BiFunction { t1: AdsDto, t2: ContentDto ->
+            model.getCrossPromo(),
+            Function3 { t1: AdsDto, t2: ContentDto, t3: CrossPromo ->
                 Log.d("SAS", "ZIP")
                 (applicationContext as AppComponent).setAdsDto(t1)
-
+                (applicationContext as AppComponent).setCrossPromo(t3)
                 onDataLoaded(t2)
-
-
 
             }).observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .doOnError {
                 retriesCount++
                 if (retriesCount == 5) {
-                    Toast.makeText(this, "Connection error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show()
                     retriesCount = 0
                 }
             }
@@ -216,21 +228,46 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             }
             .subscribe({ res ->
                 Log.d("SAS", "SUCC")
-                showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, false)
+                initAds()
+                initRateDialog()
+                showFirstPrivacyAlert()
             }, { err ->
                 Log.d("SAS", "ERR")
             })
         )
 
+    }
 
+    private fun initRateDialog() {
+
+        val isMarketPageShowed = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(IS_MARKET_PAGE_SHOWED, false)
+
+        if (!isMarketPageShowed) {
+            val adsDto = (applicationContext as AppComponent).getAdsDto()
+            adsDto?.let { adsDto ->
+                rateAppSubject
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .delay(adsDto.rateDialogFrequency.toLong(), TimeUnit.SECONDS)
+                    .subscribe {
+                        val isRateAppDialogShowed = (applicationContext as? AppComponent)?.isRateUsDialogShowed ?: false
+                        if (!isRateAppDialogShowed) {
+                            Log.d("CDA123", "show rate dialog from main")
+                            (applicationContext as? AppComponent)?.isRateUsDialogShowed = true
+                            RateAppDialogFragment.create().show(supportFragmentManager, "")
+                        }
+                    }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        rewardedVideoAd.destroy(this)
+        rewardedVideoAd?.destroy(this)
         compositeDisposable.clear()
+        rateAppSubject.onComplete()
     }
-
 
     private fun showMainFragment(content: ContentDto) {
         supportFragmentManager
@@ -240,9 +277,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     private fun onDataLoaded(content: ContentDto) {
-
-
-
 
         var requestsCount = 0
 
@@ -289,11 +323,8 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             }
         }
 
-
         if (requestsCount == 0) {
-
             showMainFragment(content)
-
         }
 
     }
@@ -340,13 +371,43 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     override fun onItemSelected() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onPageShowed() {
         pageShowCounter++
-        if (pageShowCounter > 0 && pageShowCounter % 5 == 0) {
-            displayInterstitial()
+
+        val adsDto = (applicationContext as AppComponent).getAdsDto()
+
+        adsDto?.let {
+            if (pageShowCounter > 0 && pageShowCounter % adsDto.interstitialFrequency == 0) {
+                displayInterstitial()
+            }
+        }
+    }
+
+    override fun onClickRateButton() {
+        rateAppSubject.onComplete()
+        (applicationContext as? AppComponent)?.isRateUsDialogShowed = false
+        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(IS_MARKET_PAGE_SHOWED, true)
+            .apply()
+    }
+
+    override fun onClickDismissButton() {
+        rateAppSubject.onNext(false)
+        (applicationContext as? AppComponent)?.isRateUsDialogShowed = false
+
+        val isMarketPageShowed =
+            getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(IS_MARKET_PAGE_SHOWED, false)
+
+        if (!isMarketPageShowed) {
+            getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(IS_MARKET_PAGE_SHOWED, false)
+                .apply()
         }
     }
 
@@ -365,3 +426,7 @@ interface OnPageShow {
     fun onPageShowed()
 }
 
+interface OnRateAppAction {
+    fun onClickRateButton()
+    fun onClickDismissButton()
+}

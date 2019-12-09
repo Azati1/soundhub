@@ -28,5 +28,9 @@ data class AdsDto(
     @SerializedName("feed_back_email")
     val feedbackEmail: String,
     @SerializedName("privacy_policy_url")
-    val privacyPolicyUrl: String
+    val privacyPolicyUrl: String,
+    @SerializedName("admob_native_id")
+    val admobNativeId: String,
+    @SerializedName("gdpr_policy_url")
+    val gdprPolicyUrl: String
 )

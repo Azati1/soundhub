@@ -3,6 +3,7 @@ package com.azati1.soundhub.ui.section
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.azati1.soundhub.RecomendedApplicationsFragment
 import com.azati1.soundhub.components.AdContentItem
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.InnerContentItem
@@ -13,17 +14,17 @@ const val SECTION_SIZE = 3
 class SectionPagerAdapter(fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-
     private val sectionContents = arrayListOf<SectionPage>()
 
-
     override fun getItem(position: Int): Fragment {
+        if (position == sectionContents.size)
+            return RecomendedApplicationsFragment.create()
         return SectionContentFragment.newInstance(sectionContents[position])
     }
 
     override fun getCount(): Int {
 
-        return sectionContents.size
+        return sectionContents.size + 1
     }
 
     fun addItems(items: List<ButtonItem>) {

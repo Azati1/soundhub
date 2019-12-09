@@ -3,16 +3,12 @@ package com.azati1.soundhub.repo
 import com.azati1.soundhub.components.ApiService
 import com.azati1.soundhub.components.AdsDto
 import com.azati1.soundhub.components.ContentDto
+import com.azati1.soundhub.components.CrossPromo
 import io.reactivex.Single
-import java.io.File
 
 class Repository(
     private val apiService: ApiService
 ) {
-
-    fun getFileByPath(path: String): File? {
-        return null
-    }
 
     fun getAdsData() : Single<AdsDto> {
         return apiService.getAdmobData()
@@ -20,6 +16,10 @@ class Repository(
 
     fun getContent() : Single<ContentDto> {
         return apiService.getContentData()
+    }
+
+    fun getCrossPromo() : Single<CrossPromo> {
+        return apiService.getCrossPromo()
     }
 
 }

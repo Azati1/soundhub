@@ -1,21 +1,20 @@
 package com.azati1.soundhub.components
 
 import android.app.Application
+import com.azati1.soundhub.R
 import com.downloader.PRDownloader
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.xml.datatype.DatatypeConstants.SECONDS
 import okhttp3.OkHttpClient
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import java.util.concurrent.TimeUnit
-
+import com.yandex.metrica.YandexMetrica
+import com.yandex.metrica.YandexMetricaConfig
 
 class AppComponent : Application() {
 
     private var ads: AdsDto? = null
-
+    private var crossPromo: CrossPromo? = null
+    var isRateUsDialogShowed = false
 
     companion object {
 
@@ -43,14 +42,25 @@ class AppComponent : Application() {
     override fun onCreate() {
         super.onCreate()
         PRDownloader.initialize(applicationContext)
+        /*val config = YandexMetricaConfig.newConfigBuilder(resources.getString(R.string.appMetricaKey)).build()
+        YandexMetrica.activate(applicationContext, config)
+        YandexMetrica.enableActivityAutoTracking(this)*/
     }
 
-    public fun setAdsDto(adsDto: AdsDto){
+    fun setAdsDto(adsDto: AdsDto) {
         ads = adsDto
     }
 
-    public fun getAdsDto(): AdsDto?{
+    fun getAdsDto(): AdsDto? {
         return ads
+    }
+
+    fun setCrossPromo(crossPromo: CrossPromo) {
+        this.crossPromo = crossPromo
+    }
+
+    fun getCrossPromo(): CrossPromo? {
+        return crossPromo
     }
 
 }

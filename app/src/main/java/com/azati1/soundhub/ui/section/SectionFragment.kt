@@ -1,10 +1,10 @@
 package com.azati1.soundhub.ui.section
 
-
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +12,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.azati1.soundhub.R
+import com.azati1.soundhub.RateAppDialogFragment
+import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.ContentItem
 import com.azati1.soundhub.components.ContentItemDto
-import com.azati1.soundhub.ui.main.OnBackPressed
-import com.azati1.soundhub.ui.main.OnPageShow
-import com.azati1.soundhub.ui.main.OnSoundAction
+import com.azati1.soundhub.ui.main.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -30,9 +30,11 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 const val SECTION_CONTENT_FRAGMENT = "SECTION_CONTENT"
+
 class SectionFragment : Fragment(), OnBackPressed {
 
     private var contentItem: ContentItem? = null
+    private var rateUsDisposable: Disposable? = null
 
     var canPop: Boolean = false
     lateinit var timerSubscribe: Disposable
@@ -68,10 +70,12 @@ class SectionFragment : Fragment(), OnBackPressed {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val sectionPagerAdapter = SectionPagerAdapter(childFragmentManager)
 
-        createAdBanner()
+        val adsDto = (context?.applicationContext as AppComponent).getAdsDto()
+        adsDto?.let {
+            createAdBanner(adsDto.admobBannerId)
+        }
 
         contentItem = arguments?.getSerializable("item") as ContentItem?
 
@@ -102,13 +106,20 @@ class SectionFragment : Fragment(), OnBackPressed {
 
                 override fun onPageSelected(position: Int) {
                     (context as? OnPageShow)?.onPageShowed()
+                    if (position == sectionPagerAdapter.count - 1) {
+                        showRateUsDialogIfNeed()
+                    } else {
+                        rateUsDisposable?.dispose()
+                    }
                 }
 
             }
         )
 
         prevPageButton.setOnClickListener {
-            if (sectionsViewPager.currentItem > 0) {
+            if (sectionsViewPager.currentItem == 0)
+                fragmentManager?.popBackStack()
+            else if (sectionsViewPager.currentItem > 0) {
                 sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem - 1, true)
             }
         }
@@ -124,7 +135,28 @@ class SectionFragment : Fragment(), OnBackPressed {
         }
     }
 
-    private fun createAdBanner() {
+    private fun showRateUsDialogIfNeed() {
+        rateUsDisposable = Observable.just(1)
+            .delay(10L, TimeUnit.SECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val isMarketPageShowed = context
+                    ?.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                    ?.getBoolean(IS_MARKET_PAGE_SHOWED, false) ?: false
+                val isRateUsDialogShowNow = (context?.applicationContext as? AppComponent)?.isRateUsDialogShowed ?: false
+                if (!isRateUsDialogShowNow && !isMarketPageShowed) {
+                    Log.d("CDA123", "show rate dialog from section")
+                    fragmentManager?.let { fragmentManager ->
+                        val rateAppDialogFragment = RateAppDialogFragment.create()
+                        rateAppDialogFragment.show(fragmentManager, "")
+                    }
+                    (context?.applicationContext as? AppComponent)?.isRateUsDialogShowed = true
+                }
+            }
+    }
+
+    private fun createAdBanner(id: String) {
 
         val size = getAdSize(ad_container)
 
@@ -137,7 +169,7 @@ class SectionFragment : Fragment(), OnBackPressed {
 
         val adView = AdView(context)
         adView.adSize = size
-        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+        adView.adUnitId = id
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)

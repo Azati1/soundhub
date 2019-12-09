@@ -11,4 +11,7 @@ interface ApiService {
     @GET("admob.php")
     fun getAdmobData(): Single<AdsDto>
 
+    @GET("crosspromo.php")
+    fun getCrossPromo(): Single<CrossPromo>
+
 }

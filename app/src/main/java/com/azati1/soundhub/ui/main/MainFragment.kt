@@ -1,6 +1,5 @@
 package com.azati1.soundhub.ui.main
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,37 +13,18 @@ import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.Content
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.components.ContentItem
-import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), SectionRecyclerViewEvents {
-    override fun onItemSelected() {
-        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.INVISIBLE
-    }
-
-    override fun onImagesLoaded() {
-        (context as SectionRecyclerViewEvents)?.let {
-            it.onImagesLoaded()
-        }
-        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.VISIBLE
-    }
 
     private var content: Content? = null
-    private var mainFragmentCallbacks: SectionRecyclerViewEvents? = null
     private var rootView: View? = null
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if(rootView != null){
+        if (rootView != null) {
             Log.d("MSG", "view restored")
             return rootView
         } else {
@@ -52,12 +32,6 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
             rootView = inflater.inflate(R.layout.fragment_main, container, false)
             return rootView
         }
-
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("MSG", "onDetach is called")
 
     }
 
@@ -84,10 +58,15 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
 
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d("MSG", "onPause is called")
+    override fun onItemSelected() {
+        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.INVISIBLE
+    }
 
+    override fun onImagesLoaded() {
+        (context as SectionRecyclerViewEvents)?.let {
+            it.onImagesLoaded()
+        }
+        rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.VISIBLE
     }
 
     companion object {

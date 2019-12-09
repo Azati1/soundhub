@@ -17,11 +17,6 @@ import com.azati1.soundhub.ui.section.SectionFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-
-interface SectionsAdapterCallbacks {
-    fun onImagesLoaded()
-}
-
 class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.SectionViewHolder>() {
 
     private val sections = mutableListOf<ContentItem>()
@@ -51,17 +46,14 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
 
-
-
         Log.d("MSG", "onBindViewHolder")
 
-        if(holder.isInitialized){
+        if (holder.isInitialized) {
             Log.d("MSG", "holder is initialized")
             return
         } else {
             Log.d("MSG", "holder is NOT initialized")
         }
-
 
         holder.setIsRecyclable(false)
 
@@ -120,7 +112,6 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var isInitialized: Boolean = false
-        val sectionItemView = itemView.findViewById<LinearLayout>(R.id.sectionItemView)
         val image = itemView.findViewById<ImageView>(R.id.sectionImage)
         val title = itemView.findViewById<TextView>(R.id.sectionTitle)
 
