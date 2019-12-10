@@ -2,11 +2,13 @@ package com.azati1.soundhub.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -41,6 +43,8 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.io.File
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
@@ -57,7 +61,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private var pageShowCounter = 0
 
     private var interstitialAd: InterstitialAd? = null
-    private var rewardedVideoAd: RewardedVideoAd? = null
 
     private val rateAppSubject = PublishSubject.create<Boolean>()
 
@@ -71,7 +74,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         model = MainModel(this)
         dirPath = applicationInfo.dataDir
         loadData()
-
+        //printKeyHash()
     }
 
     private fun showPrivacyAlert(url: String, title: String) {
@@ -129,11 +132,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        rewardedVideoAd?.pause(this)
-    }
-
     private fun initAds() {
 
         val adsDto = (applicationContext as AppComponent).getAdsDto()
@@ -151,10 +149,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                 }
             }
             interstitialAd?.loadAd(adRequest)
-
-            rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-
-            rewardedVideoAd?.loadAd(adsDto.admobRewardId, AdRequest.Builder().build())
         }
     }
 
@@ -181,10 +175,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             showMenu()
         }
         adsButton.setOnClickListener {
-            rewardedVideoAd?.let {
-                if (it.isLoaded)
-                    it.show()
-            }
+            displayInterstitial()
         }
     }
 
@@ -299,7 +290,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     override fun onDestroy() {
         super.onDestroy()
-        rewardedVideoAd?.destroy(this)
         compositeDisposable.clear()
         rateAppSubject.onComplete()
     }

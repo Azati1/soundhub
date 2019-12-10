@@ -63,9 +63,7 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
     }
 
     override fun onImagesLoaded() {
-        (context as SectionRecyclerViewEvents)?.let {
-            it.onImagesLoaded()
-        }
+        (context as? SectionRecyclerViewEvents)?.onImagesLoaded()
         rootView?.findViewById<RecyclerView>(R.id.sectionsRecyclerView)?.visibility = View.VISIBLE
     }
 

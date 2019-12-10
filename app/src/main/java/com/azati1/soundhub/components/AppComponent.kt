@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import com.facebook.ads.AudienceNetworkAds
 import okhttp3.Cache
 import java.util.concurrent.TimeUnit
 
@@ -96,11 +97,11 @@ class AppComponent : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        AudienceNetworkAds.isInAdsProcess(this)
         PRDownloader.initialize(applicationContext)
-        /*val config = YandexMetricaConfig.newConfigBuilder(resources.getString(R.string.appMetricaKey)).build()
+        val config = YandexMetricaConfig.newConfigBuilder(resources.getString(R.string.appMetricaKey)).build()
         YandexMetrica.activate(applicationContext, config)
-        YandexMetrica.enableActivityAutoTracking(this)*/
+        YandexMetrica.enableActivityAutoTracking(this)
     }
 
     fun setAdsDto(adsDto: AdsDto) {
