@@ -1,6 +1,7 @@
 package com.azati1.soundhub.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -188,12 +189,13 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     private fun showMenu() {
-        val menuItems = arrayOf<CharSequence>("Privacy Policy", "Personalized Ads")
+        val menuItems = arrayOf<CharSequence>("Privacy Policy", "Personalized Ads", "More Apps")
         val builder = AlertDialog.Builder(this)
         builder.setItems(menuItems) { dialog, item ->
             when (item) {
                 0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, "Privacy Policy")
                 1 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl, "Personalized Ads")
+                2 -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/dev?id=5584164941825017957")))
             }
         }
         val menu = builder.create()

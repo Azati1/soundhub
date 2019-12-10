@@ -152,7 +152,7 @@ class SectionContentFragment : Fragment(){
             }
         } else {
 
-            val adContainer = layout.findViewById<LinearLayout>(R.id.item_content)
+            val adContainer = layout.findViewById<LinearLayout>(R.id.ad_container)
             adContainer.visibility = View.VISIBLE
             val adsDto = (context?.applicationContext as AppComponent).getAdsDto()
             adsDto?.let {
@@ -166,6 +166,7 @@ class SectionContentFragment : Fragment(){
                             if (unifiedNativeAdView is UnifiedNativeAdView) {
                                 mapUnifiedNativeAdToLayout(it, unifiedNativeAdView)
                                 adContainer.removeAllViews()
+                                adContainer.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
                                 adContainer.addView(unifiedNativeAdView)
                             }
                         }

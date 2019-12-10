@@ -1,7 +1,6 @@
 package com.azati1.soundhub.ui.section
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -12,12 +11,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.size
 import androidx.viewpager.widget.ViewPager
-import com.azati1.soundhub.R
 import com.azati1.soundhub.RateAppDialogFragment
 import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.ContentItem
-import com.azati1.soundhub.components.ContentItemDto
 import com.azati1.soundhub.ui.main.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,6 +26,9 @@ import com.google.android.gms.ads.AdView
 import kotlinx.android.synthetic.main.fragment_section.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
+import android.animation.PropertyValuesHolder
+import android.animation.ObjectAnimator
+import com.azati1.soundhub.R
 
 const val SECTION_CONTENT_FRAGMENT = "SECTION_CONTENT"
 
@@ -155,17 +155,30 @@ class SectionFragment : Fragment(), OnBackPressed {
             else if (sectionsViewPager.currentItem > 0) {
                 sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem - 1, true)
             }
+            animateButton(prevPageButton)
         }
 
         nextPageButton.setOnClickListener {
             if (sectionPagerAdapter.count > sectionsViewPager.currentItem + 1) {
                 sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem + 1, true)
             }
+            animateButton(nextPageButton)
         }
 
         stopButton.setOnClickListener {
             (context as? OnSoundAction)?.onSoundStopped()
+            animateButton(stopButton)
         }
+    }
+
+    private fun animateButton(button: View) {
+        val scale = ObjectAnimator.ofPropertyValuesHolder(
+            button,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f)
+        )
+        scale.duration = 400
+        scale.start()
     }
 
     private fun showRateUsDialogIfNeed() {
