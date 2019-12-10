@@ -57,7 +57,19 @@
             android:id="@+id/container"
             android:layout_below="@id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <WebView
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:id="@+id/cacheWebView"/>
+            <WebView
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:id="@+id/cacheWebViewGdpr"/>
+        </FrameLayout>
 
     </RelativeLayout>
 

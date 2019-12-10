@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.size
 import androidx.viewpager.widget.ViewPager
 import com.azati1.soundhub.R
 import com.azati1.soundhub.RateAppDialogFragment
@@ -39,6 +40,8 @@ class SectionFragment : Fragment(), OnBackPressed {
     var canPop: Boolean = false
     lateinit var timerSubscribe: Disposable
 
+
+
     override fun onBackPressed(): Boolean {
         return canPop
     }
@@ -53,7 +56,7 @@ class SectionFragment : Fragment(), OnBackPressed {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.applicationContext
-        timerSubscribe = Observable.interval(420, TimeUnit.MILLISECONDS)
+        timerSubscribe = Observable.interval(900, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{
@@ -93,7 +96,17 @@ class SectionFragment : Fragment(), OnBackPressed {
             object : ViewPager.OnPageChangeListener {
 
                 override fun onPageScrollStateChanged(state: Int) {
-                    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    Log.d("SC12345", "PAGE SCROLL STATE CHANGED " + state)
+
+                    if(state == ViewPager.SCROLL_STATE_IDLE){
+                        if (sectionsViewPager?.currentItem == sectionsViewPager?.adapter!!.count - 1){
+                            sectionName?.alpha = 0f
+                        } else {
+                            sectionName?.alpha = 1f
+                        }
+                    }
+
+
                 }
 
                 override fun onPageScrolled(
@@ -101,10 +114,29 @@ class SectionFragment : Fragment(), OnBackPressed {
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-                    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                    sectionsViewPager?.adapter?.let {
+                        var lastPage = it.count - 2
+                            if(position == lastPage){
+                            sectionName?.alpha = 1 - positionOffset
+                        } else if (position == lastPage + 1){
+                            sectionName?.alpha = 0f
+                        } else {
+                            sectionName?.alpha = 1f
+                        }
+                    }
+
+
+
+
                 }
 
                 override fun onPageSelected(position: Int) {
+                    Log.d("MSG", "PAGE SELECTED " + position)
+
+
+
+
                     (context as? OnPageShow)?.onPageShowed()
                     if (position == sectionPagerAdapter.count - 1) {
                         showRateUsDialogIfNeed()
@@ -117,7 +149,8 @@ class SectionFragment : Fragment(), OnBackPressed {
         )
 
         prevPageButton.setOnClickListener {
-            if (sectionsViewPager.currentItem == 0)
+            Log.d("MSG_CANPOP", canPop.toString())
+            if (sectionsViewPager.currentItem == 0 && canPop)
                 fragmentManager?.popBackStack()
             else if (sectionsViewPager.currentItem > 0) {
                 sectionsViewPager.setCurrentItem(sectionsViewPager.currentItem - 1, true)

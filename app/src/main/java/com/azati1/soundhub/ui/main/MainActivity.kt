@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.azati1.soundhub.R
@@ -48,7 +49,7 @@ private const val ACCEPTED: String = "ACCEPTED"
 class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEvents, OnPageShow, OnRateAppAction {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val model = MainModel()
+    private lateinit var model: MainModel
     private lateinit var dirPath: String
     private var player: MediaPlayer = MediaPlayer()
     private var pageShowCounter = 0
@@ -61,11 +62,12 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        dirPath = applicationInfo.dataDir
 
         setContentView(R.layout.activity_main)
         initToolbar()
         initFragment()
+        model = MainModel(this)
+        dirPath = applicationInfo.dataDir
         loadData()
 
     }
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         webView.loadUrl(url)
         webView.settings.javaScriptEnabled = true
         webView.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
+        webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -98,6 +101,22 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     private fun showFirstPrivacyAlert() {
         if (!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)) {
+
+            cacheWebView.loadUrl((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl)
+            cacheWebView.settings.javaScriptEnabled = true
+            cacheWebView.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
+            cacheWebView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            cacheWebView.webViewClient = WebViewClient()
+            cacheWebView.webChromeClient = WebChromeClient()
+
+            cacheWebViewGdpr.loadUrl((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl)
+            cacheWebViewGdpr.settings.javaScriptEnabled = true
+            cacheWebViewGdpr.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
+            cacheWebViewGdpr.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            cacheWebViewGdpr.webViewClient = WebViewClient()
+            cacheWebViewGdpr.webChromeClient = WebChromeClient()
+
+
             lateinit var dialog: AlertDialog
 
             var builder = AlertDialog.Builder(this)

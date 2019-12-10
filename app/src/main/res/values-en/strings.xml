@@ -6,12 +6,12 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="sectionTransitionName">sectionTransition</string>
     <string name="go_back">Go back</string>
-    <string name="rate_text">Thank you for using our\'s application. Can you please rate us on Google play?</string>
+    <string name="rate_text">Thank you for using our application. Can you please rate us on Google play?</string>
     <string name="rate_us">Rate</string>
-    <string name="recommended_apps">Recommended application</string>
+    <string name="recommended_apps">Recommended applications</string>
     <string name="section_name">Section name</string>
     <string name="close">Close</string>
     <string name="connection_error">Connection error</string>
-    <string name="first_dialog_text">This application used personalized ads. Do you wanna continue?</string>
+    <string name="first_dialog_text">This application is using personalized ads. Do you want to continue?</string>
     <string name="attention">Attention</string>
 </resources>
