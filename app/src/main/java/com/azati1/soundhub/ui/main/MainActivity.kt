@@ -2,6 +2,7 @@ package com.azati1.soundhub.ui.main
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -101,20 +102,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
     private fun showFirstPrivacyAlert() {
         if (!getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(ACCEPTED, false)) {
-
-            cacheWebView.loadUrl((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl)
-            cacheWebView.settings.javaScriptEnabled = true
-            cacheWebView.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
-            cacheWebView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-            cacheWebView.webViewClient = WebViewClient()
-            cacheWebView.webChromeClient = WebChromeClient()
-
-            cacheWebViewGdpr.loadUrl((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl)
-            cacheWebViewGdpr.settings.javaScriptEnabled = true
-            cacheWebViewGdpr.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
-            cacheWebViewGdpr.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-            cacheWebViewGdpr.webViewClient = WebViewClient()
-            cacheWebViewGdpr.webChromeClient = WebChromeClient()
 
 
             lateinit var dialog: AlertDialog
@@ -250,11 +237,38 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                 initAds()
                 initRateDialog()
                 showFirstPrivacyAlert()
+
+                if(isOnline(applicationContext))
+                    cacheWebView.clearCache(true)
+
+                cacheWebView.loadUrl((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl)
+                cacheWebView.settings.javaScriptEnabled = true
+                cacheWebView.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
+                cacheWebView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                cacheWebView.webViewClient = WebViewClient()
+                cacheWebView.webChromeClient = WebChromeClient()
+
+
+                cacheWebViewGdpr.loadUrl((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl)
+                cacheWebViewGdpr.settings.javaScriptEnabled = true
+                cacheWebViewGdpr.settings.userAgentString = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3"
+                cacheWebViewGdpr.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                cacheWebViewGdpr.webViewClient = WebViewClient()
+                cacheWebViewGdpr.webChromeClient = WebChromeClient()
+
+
+
             }, { err ->
                 Log.d("SAS", "ERR")
             })
         )
 
+    }
+
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
     }
 
     private fun initRateDialog() {
