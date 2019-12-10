@@ -3,7 +3,7 @@
     <string name="appMetricaKey" translatable="false">82f53a7b-ee7d-4b93-a3af-3fc0e813f26d</string>
     <string name="admobAppKey" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="facebook_app_id" translatable="false">2412805565625464</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">add late</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2412805565625464</string>
     <string name="sectionTransitionName">sectionTransition</string>
     <string name="accept">Продолжить</string>
     <string name="decline">Выход</string>

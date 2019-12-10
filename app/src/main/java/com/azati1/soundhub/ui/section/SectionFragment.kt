@@ -59,10 +59,10 @@ class SectionFragment : Fragment(), OnBackPressed {
         timerSubscribe = Observable.interval(900, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
+            .subscribe ({
                 canPop = true
                 timerSubscribe.dispose()
-            }
+            }, { err -> Log.d("CDA", err.message) })
     }
 
     override fun onPause() {
@@ -186,7 +186,7 @@ class SectionFragment : Fragment(), OnBackPressed {
             .delay(10L, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 val isMarketPageShowed = context
                     ?.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     ?.getBoolean(IS_MARKET_PAGE_SHOWED, false) ?: false
@@ -199,7 +199,7 @@ class SectionFragment : Fragment(), OnBackPressed {
                     }
                     (context?.applicationContext as? AppComponent)?.isRateUsDialogShowed = true
                 }
-            }
+            }, { err -> Log.d("CDA", err.message)})
     }
 
     private fun createAdBanner(id: String) {

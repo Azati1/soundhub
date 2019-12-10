@@ -34,6 +34,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardedVideoAd
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -276,14 +277,14 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .delay(adsDto.rateDialogFrequency.toLong(), TimeUnit.SECONDS)
-                    .subscribe {
+                    .subscribe ({
                         val isRateAppDialogShowed = (applicationContext as? AppComponent)?.isRateUsDialogShowed ?: false
                         if (!isRateAppDialogShowed) {
                             Log.d("CDA123", "show rate dialog from main")
                             (applicationContext as? AppComponent)?.isRateUsDialogShowed = true
                             RateAppDialogFragment.create().show(supportFragmentManager, "")
                         }
-                    }
+                    }, { err -> Log.d("CDA", err.message)})
             }
         }
     }
