@@ -1,21 +1,16 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:textAppearance">@style/DefaultTextViewStyle</item>
     </style>
 
-    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif-light</item>
-    </style>
-
-    <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textSize">24dp</item>
+    <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/aznauri_font</item>
+        <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
 </resources>

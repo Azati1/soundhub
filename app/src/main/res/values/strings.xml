@@ -4,6 +4,9 @@
     <string name="admobAppKey" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="facebook_app_id" translatable="false">2412805565625464</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb2412805565625464</string>
+    <string name="more_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=5584164941825017957</string>
+    <string name="base_url" translatable="false">https://newsoundboard.xyz/</string>
+
     <string name="sectionTransitionName">sectionTransition</string>
     <string name="accept">Продолжить</string>
     <string name="decline">Выход</string>

@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
             when (item) {
                 0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, "Privacy Policy")
                 1 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl, "Personalized Ads")
-                2 -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/dev?id=5584164941825017957")))
+                2 -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(resources.getString(R.string.more_apps_url))))
             }
         }
         val menu = builder.create()
@@ -266,7 +266,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     }
 
     private fun initRateDialog() {
-
         val isMarketPageShowed = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getBoolean(IS_MARKET_PAGE_SHOWED, false)
 

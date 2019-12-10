@@ -76,7 +76,7 @@ class AppComponent : Application() {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
-                    .baseUrl("https://newsoundboard.xyz/")
+                    .baseUrl(context.resources.getString(R.string.base_url))
                     .build()
                 apiService = retrofit.create(ApiService::class.java)
             }

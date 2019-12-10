@@ -18,8 +18,14 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles fileTree('proguard').asList().toArray()
+        }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles fileTree('proguard').asList().toArray()
         }
     }
 }
@@ -50,11 +56,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
-    // AppMetrica SDK.
-    implementation 'com.yandex.android:mobmetricalib:3.8.0'
-    // Optionally. Play Install Referrer library.
-    implementation 'com.android.installreferrer:installreferrer:1.1'
 
+    implementation 'com.yandex.android:mobmetricalib:3.8.0'
+    implementation 'com.android.installreferrer:installreferrer:1.1'
     implementation 'com.facebook.android:audience-network-sdk:5.6.0'
 
 }

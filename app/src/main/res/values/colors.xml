@@ -3,5 +3,7 @@
     <color name="colorPrimary">#0d47a1</color>
     <color name="colorPrimaryDark">#283CAD</color>
     <color name="colorAccent">#3F51B5</color>
-    <color name="rippleColor">#2255A3</color>
+    <color name="colorTextDefault">#fff</color>
+    <color name="colorTextSecondary">#000</color>
+    <color name="colorLoader">#fff</color>
 </resources>

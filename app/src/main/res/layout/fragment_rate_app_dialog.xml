@@ -29,8 +29,9 @@
             android:layout_marginEnd="16dp"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
-            android:textSize="14dp"
-            android:textAppearance="@style/TextAppearance.Title"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="18dp"
+            android:textAppearance="@style/DefaultTextViewStyle"
             android:text="@string/rate_text" />
 
     </LinearLayout>
@@ -42,8 +43,8 @@
         android:text="@string/rate_us"
         android:layout_margin="16dp"
         android:textColor="@color/colorPrimary"
-        android:textAppearance="@style/TextAppearance.Title"
         android:textSize="18dp"
+        android:textAppearance="@style/DefaultTextViewStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/closeDialogButton"
@@ -55,8 +56,9 @@
         android:layout_height="wrap_content"
         android:text="@string/close"
         android:layout_margin="16dp"
-        android:textAppearance="@style/TextAppearance.Title"
         android:textSize="18dp"
+        android:textColor="@color/colorTextSecondary"
+        android:textAppearance="@style/DefaultTextViewStyle"
         app:layout_constraintEnd_toStartOf="@+id/rateAppButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

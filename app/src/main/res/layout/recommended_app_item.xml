@@ -19,12 +19,11 @@
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14dp"
         android:layout_gravity="center"
-        android:textColor="#fff"
         app:layout_constraintStart_toStartOf="@id/app_picture"
         app:layout_constraintEnd_toEndOf="@id/app_picture"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:textAppearance="@style/TextAppearance.Title"/>
+        android:textSize="18dp"
+        android:textAppearance="@style/DefaultTextViewStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
