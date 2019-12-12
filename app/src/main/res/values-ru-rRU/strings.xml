@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accept">Продолжить</string>
+    <string name="attention">Внимание</string>
+    <string name="close">Закрыть</string>
+    <string name="connection_error">Проблема с подключением</string>
+    <string name="decline">Выход</string>
+    <string name="first_dialog_text">В нашем приложении используется персонализированная реклама. Нажмите продолжить, если вас это устраивает.</string>
+    <string name="go_back">Вернуться обратно</string>
+    <string name="rate_text">Спасибо что пользуетесь нашим приложением! Хотите оценить его в Google play?</string>
+    <string name="rate_us">Оценить</string>
+    <string name="recommended_apps">Рекомендуем эти приложения</string>
+    <string name="section_name">Название раздела</string>
+    <string name="content_url">https://newsoundboard.xyz/json_ru.php</string>
+</resources>
