@@ -199,6 +199,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         var retriesCount = 0
 
         compositeDisposable.add(Single.zip(
+
             model.getAds(),
             model.getContent(contentUrl),
             model.getCrossPromo(),

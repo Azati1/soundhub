@@ -71,15 +71,18 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
             .centerCrop()
             .fit()
             .into(holder.image, object : Callback {
+
                 override fun onSuccess() {
                     Log.d("MSG", "onSuccess")
-                    if (++loadedCount == createdTasks)
+                    (++loadedCount == createdTasks)
                         dataLoadedListener!!.onImagesLoaded()
 
                 }
 
                 override fun onError(e: Exception?) {
                     Log.d("MSG", "onError")
+                    if (++loadedCount == createdTasks)
+                        dataLoadedListener!!.onImagesLoaded()
                 }
             })
 
