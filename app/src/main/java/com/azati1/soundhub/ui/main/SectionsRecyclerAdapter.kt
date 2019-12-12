@@ -2,6 +2,7 @@ package com.azati1.soundhub.ui.main
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.annotation.SuppressLint
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +10,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +47,7 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
         return sections.size
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
 
         Log.d("MSG", "onBindViewHolder")
@@ -130,8 +131,8 @@ class SectionsRecyclerAdapter : RecyclerView.Adapter<SectionsRecyclerAdapter.Sec
     class SectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var isInitialized: Boolean = false
-        val image = itemView.findViewById<ImageView>(R.id.sectionImage)
-        val title = itemView.findViewById<TextView>(R.id.sectionTitle)
+        val image = itemView.findViewById<ImageView>(R.id.sectionImage)!!
+        val title = itemView.findViewById<TextView>(R.id.sectionTitle)!!
 
     }
 

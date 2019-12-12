@@ -2,7 +2,6 @@ package com.azati1.soundhub.ui.main
 
 import android.content.Context
 import com.azati1.soundhub.components.AdsDto
-import com.azati1.soundhub.components.ApiService
 import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ContentDto
 import com.azati1.soundhub.components.CrossPromo
@@ -17,8 +16,8 @@ class MainModel {
         repository = Repository(AppComponent.getOrCreateApiService(context))
     }
 
-    fun getContent() : Single<ContentDto> {
-        return repository.getContent()
+    fun getContent(url: String) : Single<ContentDto> {
+        return repository.getContent(url)
     }
 
     fun getAds() : Single<AdsDto> {

@@ -2,16 +2,17 @@ package com.azati1.soundhub.components
 
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Url
 
 interface ApiService {
 
-    @GET("json.php")
-    fun getContentData(): Single<ContentDto>
+    @GET
+    fun getContentData(@Url url: String): Single<ContentDto>
 
-    @GET("admob.php")
+    @GET("https://newsoundboard.xyz/admob.php") // адрес файла с настройками рекламы
     fun getAdmobData(): Single<AdsDto>
 
-    @GET("crosspromo.php")
+    @GET("https://newsoundboard.xyz/crosspromo.php") // адрес файла с настройками рекомендуемых приложений
     fun getCrossPromo(): Single<CrossPromo>
 
 }

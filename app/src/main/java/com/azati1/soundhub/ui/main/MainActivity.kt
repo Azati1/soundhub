@@ -1,24 +1,22 @@
 package com.azati1.soundhub.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Gravity
 import android.view.Window
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.azati1.soundhub.R
 import com.azati1.soundhub.RateAppDialogFragment
 import com.azati1.soundhub.components.AdsDto
@@ -33,21 +31,15 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.reward.RewardedVideoAd
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 const val PREFS_NAME: String = "PREFERENCES"
 private const val ACCEPTED: String = "ACCEPTED"
@@ -183,7 +175,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private fun showMenu() {
         val menuItems = arrayOf<CharSequence>("Privacy Policy", "Personalized Ads", "More Apps")
         val builder = AlertDialog.Builder(this)
-        builder.setItems(menuItems) { dialog, item ->
+        builder.setItems(menuItems) { _, item ->
             when (item) {
                 0 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.privacyPolicyUrl, "Privacy Policy")
                 1 -> showPrivacyAlert((applicationContext as AppComponent).getAdsDto()!!.gdprPolicyUrl, "Personalized Ads")
@@ -199,13 +191,16 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
         menu.show()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun loadData() {
 
-        var retriesCount: Int = 0
+        val contentUrl = getString(R.string.content_url)
+
+        var retriesCount = 0
 
         compositeDisposable.add(Single.zip(
             model.getAds(),
-            model.getContent(),
+            model.getContent(contentUrl),
             model.getCrossPromo(),
             Function3 { t1: AdsDto, t2: ContentDto, t3: CrossPromo ->
                 Log.d("SAS", "ZIP")
@@ -226,7 +221,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                 Log.d("CDA123", "retryWhen")
                 errors.delay(2, TimeUnit.SECONDS)
             }
-            .subscribe({ res ->
+            .subscribe({
                 Log.d("SAS", "SUCC")
                 initAds()
                 initRateDialog()
@@ -252,19 +247,21 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
 
 
 
-            }, { err ->
+            }, { _ ->
                 Log.d("SAS", "ERR")
             })
         )
 
     }
 
-    fun isOnline(context: Context): Boolean {
+    @Suppress("DEPRECATION")
+    private fun isOnline(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }
 
+    @Suppress("NAME_SHADOWING")
     private fun initRateDialog() {
         val isMarketPageShowed = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getBoolean(IS_MARKET_PAGE_SHOWED, false)
@@ -283,7 +280,7 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                             (applicationContext as? AppComponent)?.isRateUsDialogShowed = true
                             RateAppDialogFragment.create().show(supportFragmentManager, "")
                         }
-                    }, { err -> Log.d("CDA", err.message)})
+                    }, { Log.d("CDA", "err")})
             }
         }
     }
@@ -321,14 +318,6 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
                     //File("$dirPath/$fileName").createNewFile()
                     PRDownloader.download(url, dirPath, fileName)
                         .build()
-                        .setOnStartOrResumeListener { }
-                        .setOnPauseListener { }
-                        .setOnCancelListener {
-
-                        }
-                        .setOnProgressListener { progress ->
-
-                        }
                         .start(object : OnDownloadListener {
                             override fun onError(error: com.downloader.Error?) {
                             }

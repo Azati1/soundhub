@@ -1,24 +1,31 @@
 <resources>
-    <string name="app_name">soundhub</string>
+    <string name="app_name" translatable="false">soundhub</string>
     <string name="appMetricaKey" translatable="false">82f53a7b-ee7d-4b93-a3af-3fc0e813f26d</string>
     <string name="admobAppKey" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="facebook_app_id" translatable="false">2412805565625464</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb2412805565625464</string>
     <string name="more_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=5584164941825017957</string>
-    <string name="base_url" translatable="false">https://newsoundboard.xyz/</string>
+    <string name="base_url" translatable="false">https://newsoun2dboard.xyz/</string>
+    <string name="content_url">https://newsoundboard.xyz/json.php</string>
 
-    <string name="sectionTransitionName">sectionTransition</string>
-    <string name="accept">Продолжить</string>
-    <string name="decline">Выход</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="sectionTransitionName" translatable="false">sectionTransition</string>
+    <string name="accept">Continue</string>
+    <string name="decline">Decline</string>
+    <string name="privacy_policy" translatable="false">Privacy policy</string>
     <string name="section_name">Название раздела</string>
-    <string name="rate_text">Спасибо что пользуетесь нашим приложением! Хотите оценить его в Google play?</string>
-    <string name="rate_us">Оценить</string>
-    <string name="close">Закрыть</string>
-    <string name="recommended_apps">Рекомендуем эти приложения</string>
-    <string name="go_back">Вернуться обратно</string>
-    <string name="attention">Внимание</string>
-    <string name="first_dialog_text">В нашем приложении используется персонализированная реклама. Нажмите продолжить, если вас это устраивает.</string>
-    <string name="connection_error">Проблема с подключением</string>
+    <string name="rate_text">Thank you for using our application. Can you please rate us on Google play?</string>
+    <string name="rate_us">Rate</string>
+    <string name="close">Close</string>
+    <string name="recommended_apps">Recommended applications</string>
+    <string name="go_back">Go back</string>
+    <string name="attention">Attention</string>
+    <string name="first_dialog_text">This application is using personalized ads. Do you want to continue?</string>
+    <string name="connection_error">Connection error</string>
     <string name="more_apps" translatable="false">More apps</string>
+    <string name="previous_page" translatable="false">previous page</string>
+    <string name="stop" translatable="false">stop</string>
+    <string name="next_page" translatable="false">next page</string>
+    <string name="application_icon" translatable="false">application icon</string>
+    <string name="ad_icon" translatable="false">ad icon</string>
+    <string name="section_image" translatable="false">section image</string>
 </resources>

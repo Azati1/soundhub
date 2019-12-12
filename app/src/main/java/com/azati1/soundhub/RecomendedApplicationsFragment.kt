@@ -1,5 +1,6 @@
 package com.azati1.soundhub
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -64,7 +65,7 @@ class RecomendedApplicationsFragment : Fragment() {
 
     private fun buildContent() {
         val crossPressed = (context?.applicationContext as? AppComponent)?.getCrossPromo()
-        crossPressed?.let { crossPromo ->
+        crossPressed?.let { _ ->
             buildWithStrategy("wheel", crossPressed.recomendedApps)
         }
     }
@@ -131,6 +132,7 @@ class RecomendedApplicationsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun buildItem(item: RecomendedApp): View {
 
         val layout = LayoutInflater.from(context).inflate(R.layout.recommended_app_item, null, false)
@@ -149,7 +151,7 @@ class RecomendedApplicationsFragment : Fragment() {
             .load(item.pictureUrl)
             .centerCrop()
             .fit()
-            .placeholder(R.drawable.ic_music)
+            .placeholder(R.drawable.placeholder)
             .into(layout.findViewById<ImageView>(R.id.app_picture))
 
         layout.setOnClickListener {

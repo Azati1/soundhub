@@ -1,34 +1,33 @@
 package com.azati1.soundhub.ui.section
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.size
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.azati1.soundhub.R
 import com.azati1.soundhub.RateAppDialogFragment
 import com.azati1.soundhub.components.AppComponent
 import com.azati1.soundhub.components.ButtonItem
 import com.azati1.soundhub.components.ContentItem
 import com.azati1.soundhub.ui.main.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import kotlinx.android.synthetic.main.fragment_section.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
-import android.animation.PropertyValuesHolder
-import android.animation.ObjectAnimator
-import com.azati1.soundhub.R
 
 const val SECTION_CONTENT_FRAGMENT = "SECTION_CONTENT"
 
@@ -62,7 +61,7 @@ class SectionFragment : Fragment(), OnBackPressed {
             .subscribe ({
                 canPop = true
                 timerSubscribe.dispose()
-            }, { err -> Log.d("CDA", err.message) })
+            }, { Log.d("CDA", "err") })
     }
 
     override fun onPause() {
@@ -85,7 +84,6 @@ class SectionFragment : Fragment(), OnBackPressed {
         contentItem?.let {
             sectionName.text = it.name
             val buttons = mutableListOf<ButtonItem>()
-            buttons.addAll(it.buttons)
             buttons.addAll(it.buttons)
             sectionPagerAdapter.addItems(buttons)
         }
@@ -199,7 +197,7 @@ class SectionFragment : Fragment(), OnBackPressed {
                     }
                     (context?.applicationContext as? AppComponent)?.isRateUsDialogShowed = true
                 }
-            }, { err -> Log.d("CDA", err.message)})
+            }, { Log.d("CDA", "err")})
     }
 
     private fun createAdBanner(id: String) {

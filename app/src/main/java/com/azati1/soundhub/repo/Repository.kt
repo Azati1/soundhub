@@ -14,8 +14,8 @@ class Repository(
         return apiService.getAdmobData()
     }
 
-    fun getContent() : Single<ContentDto> {
-        return apiService.getContentData()
+    fun getContent(url: String) : Single<ContentDto> {
+        return apiService.getContentData(url)
     }
 
     fun getCrossPromo() : Single<CrossPromo> {

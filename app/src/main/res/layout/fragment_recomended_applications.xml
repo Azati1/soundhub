@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@drawable/imageedit_2_7087063346"
+    tools:background="@drawable/background_image"
     tools:context=".RecomendedApplicationsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/recommended_apps"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textAppearance="@style/DefaultTextViewStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:text="@string/go_back"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textAppearance="@style/DefaultTextViewStyle"
             android:layout_marginTop="32dp"
             android:transitionName="@string/sectionTransitionName"

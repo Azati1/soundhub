@@ -1,5 +1,6 @@
 package com.azati1.soundhub.ui.section
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -73,6 +74,7 @@ class SectionContentFragment : Fragment(){
         content.addView(horizontalLinearLayout)
     }
 
+    @SuppressLint("InflateParams")
     private fun buildContentLine(items: List<InnerContentItem>) {
         if (items.size == 2) {
 
@@ -116,6 +118,7 @@ class SectionContentFragment : Fragment(){
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun buildSoundboardItem(item: InnerContentItem): View {
         val layout = LayoutInflater.from(context).inflate(R.layout.soundboard_item, null, false)
         val layoutParams = LinearLayout.LayoutParams(
@@ -137,7 +140,7 @@ class SectionContentFragment : Fragment(){
                 .load(item.picture)
                 .centerCrop()
                 .fit()
-                .placeholder(R.drawable.ic_music)
+                .placeholder(R.drawable.placeholder)
                 .into(layout.findViewById<ImageView>(R.id.view))
 
             layout.setOnClickListener {

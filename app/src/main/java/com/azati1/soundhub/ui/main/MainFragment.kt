@@ -74,7 +74,6 @@ class MainFragment : Fragment(), SectionRecyclerViewEvents {
             bundle.putSerializable(
                 "content",
                 Content(
-                    mainPicture = content.mainPicture,
                     content = content.content.map {
                         ContentItem(
                             name = it.name,

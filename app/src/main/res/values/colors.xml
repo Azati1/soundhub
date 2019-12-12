@@ -6,4 +6,5 @@
     <color name="colorTextDefault">#fff</color>
     <color name="colorTextSecondary">#000</color>
     <color name="colorLoader">#fff</color>
+    <color name="colorNativeAdBackground">#000</color>
 </resources>

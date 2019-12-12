@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/section_name"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textAppearance="@style/DefaultTextViewStyle"
         android:transitionName="@string/sectionTransitionName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,32 +33,35 @@
         android:id="@+id/prevPageButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_right_arrow"
+        android:src="@drawable/next"
         android:rotation="180"
         app:layout_constraintBottom_toBottomOf="@+id/stopButton"
         app:layout_constraintEnd_toStartOf="@+id/stopButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/stopButton" />
+        app:layout_constraintTop_toTopOf="@+id/stopButton"
+        android:contentDescription="@string/previous_page" />
 
     <ImageView
         android:id="@+id/stopButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_stop"
+        android:src="@drawable/stop"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/ad_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/stop" />
 
     <ImageView
         android:id="@+id/nextPageButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_right_arrow"
+        android:src="@drawable/next"
         app:layout_constraintTop_toTopOf="@+id/stopButton"
         app:layout_constraintBottom_toBottomOf="@+id/stopButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/stopButton" />
+        app:layout_constraintStart_toEndOf="@+id/stopButton"
+        android:contentDescription="@string/next_page" />
 
     <LinearLayout
         android:id="@+id/ad_container"

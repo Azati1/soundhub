@@ -1,22 +1,19 @@
 package com.azati1.soundhub.components
 
 import android.app.Application
-import com.azati1.soundhub.R
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import com.azati1.soundhub.R
 import com.downloader.PRDownloader
+import com.facebook.ads.AudienceNetworkAds
+import com.yandex.metrica.YandexMetrica
+import com.yandex.metrica.YandexMetricaConfig
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.OkHttpClient
-import com.yandex.metrica.YandexMetrica
-import com.yandex.metrica.YandexMetricaConfig
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import com.facebook.ads.AudienceNetworkAds
-import okhttp3.Cache
-import java.util.concurrent.TimeUnit
 
 
 class AppComponent : Application() {
@@ -83,7 +80,7 @@ class AppComponent : Application() {
             return apiService!!
         }
 
-        fun hasNetwork(context: Context): Boolean? {
+        private fun hasNetwork(context: Context): Boolean? {
             var isConnected: Boolean? = false // Initial Value
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
@@ -97,11 +94,18 @@ class AppComponent : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        AudienceNetworkAds.isInAdsProcess(this)
+        val fbKey = resources.getString(R.string.facebook_app_id)
+        if (fbKey.isNotBlank())
+            AudienceNetworkAds.isInAdsProcess(this)
         PRDownloader.initialize(applicationContext)
-        val config = YandexMetricaConfig.newConfigBuilder(resources.getString(R.string.appMetricaKey)).build()
-        YandexMetrica.activate(applicationContext, config)
-        YandexMetrica.enableActivityAutoTracking(this)
+        val appMetricaKey = resources.getString(R.string.appMetricaKey)
+        if (appMetricaKey.isNotBlank()) {
+            val config =
+                YandexMetricaConfig.newConfigBuilder(resources.getString(R.string.appMetricaKey))
+                    .build()
+            YandexMetrica.activate(applicationContext, config)
+            YandexMetrica.enableActivityAutoTracking(this)
+        }
     }
 
     fun setAdsDto(adsDto: AdsDto) {
