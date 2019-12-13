@@ -195,14 +195,16 @@ class MainActivity : AppCompatActivity(), OnSoundAction, SectionRecyclerViewEven
     private fun loadData() {
 
         val contentUrl = getString(R.string.content_url)
+        val adsUrl = getString(R.string.ads_url)
+        val crossPromoUrl = getString(R.string.cross_promo_url)
 
         var retriesCount = 0
 
         compositeDisposable.add(Single.zip(
 
-            model.getAds(),
+            model.getAds(adsUrl),
             model.getContent(contentUrl),
-            model.getCrossPromo(),
+            model.getCrossPromo(crossPromoUrl),
             Function3 { t1: AdsDto, t2: ContentDto, t3: CrossPromo ->
                 Log.d("SAS", "ZIP")
                 (applicationContext as AppComponent).setAdsDto(t1)

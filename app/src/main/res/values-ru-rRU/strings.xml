@@ -12,4 +12,6 @@
     <string name="recommended_apps">Рекомендуем эти приложения</string>
     <string name="section_name">Название раздела</string>
     <string name="content_url">https://newsoundboard.xyz/json_ru.php</string>
+    <string name="ads_url">https://newsoundboard.xyz/admob.php</string>
+    <string name="cross_promo_url">https://newsoundboard.xyz/crosspromo.php</string>
 </resources>

@@ -20,12 +20,12 @@ class MainModel {
         return repository.getContent(url)
     }
 
-    fun getAds() : Single<AdsDto> {
-        return repository.getAdsData()
+    fun getAds(url: String) : Single<AdsDto> {
+        return repository.getAdsData(url)
     }
 
-    fun getCrossPromo() : Single<CrossPromo> {
-        return repository.getCrossPromo()
+    fun getCrossPromo(url: String) : Single<CrossPromo> {
+        return repository.getCrossPromo(url)
     }
 
 }

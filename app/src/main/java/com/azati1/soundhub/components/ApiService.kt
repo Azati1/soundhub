@@ -9,10 +9,10 @@ interface ApiService {
     @GET
     fun getContentData(@Url url: String): Single<ContentDto>
 
-    @GET("https://newsoundboard.xyz/admob.php") // адрес файла с настройками рекламы
-    fun getAdmobData(): Single<AdsDto>
+    @GET // адрес файла с настройками рекламы
+    fun getAdmobData(@Url url: String): Single<AdsDto>
 
-    @GET("https://newsoundboard.xyz/crosspromo.php") // адрес файла с настройками рекомендуемых приложений
-    fun getCrossPromo(): Single<CrossPromo>
+    @GET // адрес файла с настройками рекомендуемых приложений
+    fun getCrossPromo(@Url url: String): Single<CrossPromo>
 
 }

@@ -10,16 +10,16 @@ class Repository(
     private val apiService: ApiService
 ) {
 
-    fun getAdsData() : Single<AdsDto> {
-        return apiService.getAdmobData()
+    fun getAdsData(url: String) : Single<AdsDto> {
+        return apiService.getAdmobData(url)
     }
 
     fun getContent(url: String) : Single<ContentDto> {
         return apiService.getContentData(url)
     }
 
-    fun getCrossPromo() : Single<CrossPromo> {
-        return apiService.getCrossPromo()
+    fun getCrossPromo(url: String) : Single<CrossPromo> {
+        return apiService.getCrossPromo(url)
     }
 
 }

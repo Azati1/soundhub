@@ -7,6 +7,9 @@
     <string name="more_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=5584164941825017957</string>
     <string name="base_url" translatable="false">https://newsoun2dboard.xyz/</string>
     <string name="content_url">https://newsoundboard.xyz/json.php</string>
+    <string name="ads_url">https://newsoundboard.xyz/admob.php</string>
+    <string name="cross_promo_url">https://newsoundboard.xyz/crosspromo.php</string>
+
 
     <string name="sectionTransitionName" translatable="false">sectionTransition</string>
     <string name="accept">Continue</string>
